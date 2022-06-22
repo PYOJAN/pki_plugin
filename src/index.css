@@ -1,0 +1,242 @@
+@font-face {
+  font-family: "Nunito", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Nunito Regular"), local("Nunito-Regular"),
+    url("./assets/Nunito/Nunito-VariableFont_wght.ttf")
+      url("./assets/Nunito/Nunito-Italic-VariableFont_wght.ttf");
+}
+
+:root {
+  --green: #30d158;
+  --red: #ff453a;
+  --red-hover: #cf0a00;
+  --dark: #2e3440;
+  --dark1: #3b4252;
+  --dark2: #434c5e;
+  --dark3: #4c566a;
+  --black: #000;
+
+  --overlay: rgba(0, 0, 0, 0.3);
+  /* Text */
+  --text-black: #041114;
+  --text-gray: #8e8e93;
+  --text-gray1: #d6e5e9;
+
+  /* Height */
+  --height-xm-small: 26px;
+  --height-small: 32px;
+  --height-medium: 48px;
+  --height-large: 64px;
+  --height-xlarge: 96px;
+  --height100: 100%;
+
+  /* width */
+  --width-small: 32px;
+  --width-medium: 48px;
+  --width-large: 64px;
+  --width-xlarge: 96px;
+  --width100: 100%;
+}
+
+html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.70rem;
+  scroll-behavior: smooth;
+  color: var(--gray);
+}
+
+main {
+  display: block;
+}
+
+a {
+  background-color: transparent;
+  text-decoration: none;
+}
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+small {
+  font-size: 80%;
+}
+
+img {
+  border-style: none;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-size: 100%;
+  margin: 0;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+[type="button"],
+[type="reset"],
+[type="submit"],
+button {
+  -webkit-appearance: button;
+}
+
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner,
+button::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring,
+button:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+
+legend {
+  box-sizing: border-box;
+  color: inherit;
+  display: table;
+  max-width: 100%;
+  padding: 0;
+  white-space: normal;
+}
+
+progress {
+  vertical-align: baseline;
+}
+
+textarea {
+  overflow: auto;
+}
+
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+[type="search"] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+[hidden],
+template {
+  display: none;
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+ul,
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+input[type="checkbox"] {
+  width: 40px;
+  height: 20px;
+  background-color: var(--red);
+  appearance: none;
+  cursor: pointer;
+  border-radius: 10px;
+  position: relative;
+  transition: 0.2s ease-in-out;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--green);
+}
+
+input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: var(--white);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%);
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:checked::after {
+  left: calc(100% - 19px);
+}
+
+input[type="text"] {
+  cursor: text;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--text-gray1);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--text-gray);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

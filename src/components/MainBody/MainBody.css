@@ -1,0 +1,13 @@
+.main-body {
+  margin-top: var(--height-xm-small);
+  height: calc(100vh - (var(--height-xm-small) + var(--height-xm-small)) + 5px);
+  background-color: var(--dark2);
+  color: var(--text-black);
+}
+
+/* Card container */
+.card-container {
+  height: calc(var(--height-xlarge) * 2);
+  background-color: var(--dark1);
+}
+/* Card container */

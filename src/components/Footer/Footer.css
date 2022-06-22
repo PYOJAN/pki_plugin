@@ -1,0 +1,11 @@
+
+
+.footer__frame {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: calc(var(--height-xm-small) - 5px);
+    background-color: var(--dark3);
+    z-index: 99;
+    color: var(--text-black);
+} 

@@ -1,0 +1,55 @@
+
+
+/* Top sticky Navbar */
+.top__frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--height-xm-small);
+    background-color: var(--dark);
+    z-index: 99;
+
+    /* make app draggable */
+    -webkit-app-region: drag;
+}
+
+/* App Action */
+.win__action {
+    position: absolute;
+    top: 0;
+    padding: 0 10px;
+    height: var(--height-xm-small);
+    width: var(--width-xm-small);
+    background-color: var(--dark);
+    z-index: 99;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+
+    /* disable app dragabble for this element */
+    -webkit-app-region: no-drag;
+}
+.win__action[data-app="info"]{
+    left: 0;
+}
+.win__action[data-app="info"] span {
+  text-transform: capitalize;
+  font-weight: bold;
+  color: var(--text-black);
+}
+.win__action[data-app="action"]{
+    right: 0;
+    padding: 0;
+}
+.win__action .action-btn {
+    width: var(--height-xm-small);
+    height: var(--height-xm-small);
+    background-color: transparent;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+.win__action .action-btn:hover {
+    background-color: var(--red);
+    color: var(--text-gray1);
+}
+/* App Action */
