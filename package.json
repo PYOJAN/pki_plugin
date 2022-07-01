@@ -1,5 +1,5 @@
 {
-  "name": "pki_electron",
+  "name": "PKI_Plugin",
   "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
@@ -12,6 +12,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "fs-extra": "^10.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
@@ -24,7 +25,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && nodemon --exec electron .\"",
-    "electron-package": "./node_modules/.bin/electron-builder --windows -c.extraMetadata.main=build/electron.js",
+    "electron-package": "./node_modules/.bin/electron-builder --windows --linux -c.extraMetadata.main=build/electron.js",
     "preelectron-package": "npm run build"
   },
   "build": {
@@ -32,6 +33,7 @@
     "productName": "PKI Plugin",
     "files": [
       "build/**/*",
+      "database/**/*",
       "node_modules/**/*"
     ],
     "win": {

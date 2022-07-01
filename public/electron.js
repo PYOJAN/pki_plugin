@@ -1,6 +1,8 @@
 const { join } = require("path");
-const pathResolver = require("./utils/path-resolver");
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
+const appInit = require("./services/startup-process");
+const DB = require("./services/database");
+const Emiter = require("./services/mediatorBridge");
 
 const {
   default: installExtension,
@@ -13,7 +15,7 @@ const isDev = !app.isPackaged;
 // Main window is created when the app is ready.
 let mainWindow;
 
-const createWindow = () => {
+const createWindow = (cb) => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: app.name,
@@ -42,19 +44,23 @@ const createWindow = () => {
     mainWindow = null;
   });
 
-  // Open the DevTools.
-  isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
+  // Sending data to the render process
+  mainWindow.on("ready-to-show", () => {
+    Emiter.ready(); // For Render Emiter
+    // Open the DevTools.
+    isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
+  });
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(async () => {
-  try {
+Promise.all([app.whenReady(), appInit])
+  .then(async (data) => {
     // Install React Dev Tools.
     await installExtension(REACT_DEVELOPER_TOOLS);
     // Create the browser window.
-    createWindow();
+    await createWindow();
     mainWindow.show();
     mainWindow.focus();
 
@@ -63,10 +69,16 @@ app.whenReady().then(async () => {
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
-  } catch (err) {
-    console.log(err);
-  }
-});
+
+  })
+  .catch((err) => {
+    console.log({
+      status: "ERROR",
+      message: "Internal Error occurred",
+      errorStack: err.stack,
+      stack: "Promise.all",
+    });
+  });
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -75,3 +87,41 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
+ipcMain.on("EVENT:FROM:RENDER", (e, arg) => {
+  app.quit();
+});
+
+/**
+ * @Discreaption Sending initial App settings data to render process.
+ */
+
+Emiter.on("DONE", async () => {
+  const allInitData = await DB.findAll();
+  mainWindow.webContents.send("INIT:DATA", {
+    ...allInitData,
+    appVersion: app.getVersion(),
+    appName: app.name,
+  });
+});
+
+// Error Handle
+// if the Promise is rejected this will catch it
+process.on("unhandledRejection", (error) => {
+  console.log({
+    status: "\u001b[40m ERROR",
+    message: "Internal Error occurred",
+    errorStack: error.stack,
+    stack: "unhandledRejection",
+  });
+  process.exit(1);
+});
+
+process.on("uncaughtException", (error) => {
+  console.log({
+    status: "\u001b[40m ERROR",
+    message: "Internal Error occurred",
+    errorStack: error.stack,
+    stack: "uncaughtException",
+  });
+  process.exit(1);
+});

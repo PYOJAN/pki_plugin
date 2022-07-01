@@ -4,13 +4,20 @@ import "./Header.css";
 
 import appLogo from "../../assets/plug.png";
 
+const IPC = window.electron.IPC;
+
 export default function Header() {
   const [appName, setAppName] = useState("app Name");
+
+  IPC.on("INIT:DATA", (e, arg) => {
+    const { appName } = arg;
+    setAppName(appName.split("_").join(" "));
+  });
 
   // Window hide control
   const winHideHandle = (e, arg) => {
     e.preventDefault();
-    console.log(arg);
+    IPC.ipcSendEvent("EVENT:FROM:RENDER", arg);
   };
   return (
     <>

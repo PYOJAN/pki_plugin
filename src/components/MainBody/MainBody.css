@@ -5,9 +5,8 @@
   color: var(--text-black);
 }
 
-/* Card container */
-.card-container {
-  height: calc(var(--height-xlarge) * 2);
+
+.pki_address{
   background-color: var(--dark1);
+  height: 80px;
 }
-/* Card container */

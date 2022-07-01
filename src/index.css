@@ -50,6 +50,7 @@ body {
   font-size: 0.70rem;
   scroll-behavior: smooth;
   color: var(--gray);
+  box-sizing: border-box;
 }
 
 main {

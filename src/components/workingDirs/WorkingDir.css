@@ -1,0 +1,21 @@
+
+/* Card container */
+.card_container {
+    background-color: var(--dark1);
+    height: 160px;
+  }
+  .card_container h3 {
+    color: var(--text-gray1);
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: block;
+    max-width: max-content;
+    margin-left: 10px;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+  }
+  
+  .cards {
+    flex-grow: 1;
+    gap: 5px;
+  }
