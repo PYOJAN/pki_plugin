@@ -1,6 +1,6 @@
 import React from "react";
 import WorkingDir from "../workingDirs/WorkingDir";
-import Address from "../PKI/Address";
+import Address from "../PkiAddress/Address";
 
 import "./MainBody.css";
 
