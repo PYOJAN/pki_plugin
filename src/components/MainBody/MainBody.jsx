@@ -10,7 +10,7 @@ export default function MainBody() {
       {/** Card Container */}
       <WorkingDir />
 
-      <div className="pki_address w-100 d-flex align-items-center justify-content-center">
+      <div className="pki_address w-100 d-flex flex-column align-items-center">
         <Address />
       </div>
     </div>

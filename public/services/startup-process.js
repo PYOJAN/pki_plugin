@@ -1,9 +1,5 @@
-const {
-  ensureDir,
-  writeJson,
-  readJson,
-  pathExists,
-} = require("fs-extra");
+const { ensureDir, writeJson, readJson, pathExists } = require("fs-extra");
+const {findOne} = require("./database");
 const { join } = require("path");
 const { homedir } = require("os");
 
@@ -43,7 +39,7 @@ const appInit = new Promise(async (resolve, reject) => {
      * @DefaultDir Creation
      */
     let updatedSetting = {
-      ...defaultSettingData,
+      ...updatingIsFirstTimeValue["directories"],
     };
     ALLDIRS.forEach(async (path, index) => {
       const pathName = path.split("/").pop().split("\\").pop();
@@ -61,7 +57,15 @@ const appInit = new Promise(async (resolve, reject) => {
           },
         };
 
-        index === 2 && (await writeJson(APPSETTING, updatedSetting));
+        index === 2 &&
+          (await writeJson(APPSETTING, {
+            ...updatingIsFirstTimeValue,
+            directories: updatedSetting,
+            isFirstTime: {
+              dbCreated: true,
+              dirCreated: true,
+            },
+          }));
       }
     });
 

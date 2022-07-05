@@ -2,7 +2,7 @@ const { join } = require("path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const appInit = require("./services/startup-process");
 const DB = require("./services/database");
-const Emiter = require("./services/mediatorBridge");
+// const Emiter = require("./services/mediatorBridge");
 
 const {
   default: installExtension,
@@ -46,7 +46,6 @@ const createWindow = (cb) => {
 
   // Sending data to the render process
   mainWindow.on("ready-to-show", () => {
-    Emiter.ready(); // For Render Emiter
     // Open the DevTools.
     isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
   });
@@ -54,8 +53,9 @@ const createWindow = (cb) => {
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-Promise.all([app.whenReady(), appInit])
+// Some APIs can only be used after this event occurs
+Promise.all([appInit, app.whenReady()])
+  // appInit
   .then(async (data) => {
     // Install React Dev Tools.
     await installExtension(REACT_DEVELOPER_TOOLS);
@@ -69,7 +69,6 @@ Promise.all([app.whenReady(), appInit])
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
-
   })
   .catch((err) => {
     console.log({
@@ -86,29 +85,43 @@ Promise.all([app.whenReady(), appInit])
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
-
 ipcMain.on("EVENT:FROM:RENDER", (e, arg) => {
-  app.quit();
+  const { eventType } = arg;
+
+  switch (eventType) {
+    case "hide":
+      mainWindow.hide();
+      break;
+
+    default:
+      break;
+  }
 });
 
 /**
  * @Discreaption Sending initial App settings data to render process.
  */
+ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
+  const dirs = await DB.findOne(ARG);
 
-Emiter.on("DONE", async () => {
-  const allInitData = await DB.findAll();
-  mainWindow.webContents.send("INIT:DATA", {
-    ...allInitData,
-    appVersion: app.getVersion(),
-    appName: app.name,
-  });
+  return dirs;
+});
+
+/**
+ * @Updating new setting data from render process
+ */
+ipcMain.handle("EVENT:INVOCKE:FOR:UPDATE:SETTING", async (_, ARG) => {
+  const { searchKey, data } = ARG;
+  // Finding data from database
+  const updated = await DB.update(searchKey, data);
+  return updated;
 });
 
 // Error Handle
 // if the Promise is rejected this will catch it
 process.on("unhandledRejection", (error) => {
   console.log({
-    status: "\u001b[40m ERROR",
+    status: "ERROR",
     message: "Internal Error occurred",
     errorStack: error.stack,
     stack: "unhandledRejection",
@@ -118,7 +131,7 @@ process.on("unhandledRejection", (error) => {
 
 process.on("uncaughtException", (error) => {
   console.log({
-    status: "\u001b[40m ERROR",
+    status: "ERROR",
     message: "Internal Error occurred",
     errorStack: error.stack,
     stack: "uncaughtException",

@@ -4,21 +4,19 @@ import MainBody from "./components/MainBody/MainBody";
 
 import "./App.css";
 
-function App() {
-  
-
+const App = () => {
   return (
     <div className="App">
-    {/* Window top bar */}
-    <Header />
+      {/* Window top bar */}
+      <Header />
 
-    {/* Main content */}
-    <MainBody />
+      {/* Main content */}
+      <MainBody />
 
-    {/* window footer bar */}
-    <Footer />
+      {/* window footer bar */}
+      <Footer />
     </div>
   );
-}
+};
 
 export default App;

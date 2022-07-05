@@ -1,4 +1,3 @@
-
-.input-group {
-    width: 400px!important;
+input[name="url"] {
+    width: 60%!important;
 }

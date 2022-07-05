@@ -8,6 +8,7 @@
 # production
 /build
 /dist
+/database/setting.json
 
 # misc
 .DS_Store

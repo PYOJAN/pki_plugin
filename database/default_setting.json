@@ -3,20 +3,22 @@
     "dbCreated": false,
     "dirCreated": false
   },
-  "source": {
-    "isDefault": true,
-    "name": "source",
-    "path": null
-  },
-  "original": {
-    "isDefault": true,
-    "name": "original",
-    "path": null
-  },
-  "signed": {
-    "isDefault": true,
-    "name": "signed",
-    "path": null
+  "directories": {
+    "source": {
+      "isDefault": true,
+      "name": "source",
+      "path": null
+    },
+    "original": {
+      "isDefault": true,
+      "name": "original",
+      "path": null
+    },
+    "signed": {
+      "isDefault": true,
+      "name": "signed",
+      "path": null
+    }
   },
   "signature": {
     "page": "first",
@@ -29,5 +31,3 @@
   "certs": { "name": "User Prompt", "sn": "user_prompt" },
   "pki": { "url": "http://localhost", "port": "1620" }
 }
-
-

@@ -17,7 +17,7 @@ export default function Header() {
   // Window hide control
   const winHideHandle = (e, arg) => {
     e.preventDefault();
-    IPC.ipcSendEvent("EVENT:FROM:RENDER", arg);
+    IPC.ipcSendEvent("EVENT:FROM:RENDER", {eventType: arg});
   };
   return (
     <>

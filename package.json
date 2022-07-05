@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^13.5.0",
     "cross-env": "^7.0.3",
     "fs-extra": "^10.1.0",
+    "notiflix": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
@@ -25,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && nodemon --exec electron .\"",
+    "ele-dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && nodemon --exec electron .\"",
+    "dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-package": "./node_modules/.bin/electron-builder --windows --linux -c.extraMetadata.main=build/electron.js",
     "preelectron-package": "npm run build"
   },
