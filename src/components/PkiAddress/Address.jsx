@@ -49,7 +49,7 @@ const Address = () => {
         "Cancel",
         async () => {
           const isSaved = await IPC.ipcInvoke(
-            "EVENT:INVOCKE:FOR:UPDATE:SETTING",
+            "EVENT:INVOCKE:UPDATE:DATA",
             {
               searchKey: ADDRESS,
               data: values,

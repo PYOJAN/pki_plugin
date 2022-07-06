@@ -27,27 +27,49 @@ const initalDirData = [
 const WorkingDir = () => {
   const [dirs, setDirs] = useState(initalDirData);
 
+  /**
+   *
+   * @param {Object} initalDirData copy of the dir object like data
+   * @param {Object} dirRawData directory data from database
+   * @returns merged new Object
+   */
+  const mergeObject = (initalDirData, dirRawData) => {
+    let mergedData;
+    const direc = Object.values(dirRawData.data);
+    mergedData = initalDirData.map((item, i) => {
+      let newObject;
+      if (item.id === direc[i].id) {
+        newObject = Object.assign({}, item, direc[i]);
+      }
+      return newObject;
+    });
+    return mergedData;
+  };
+
+  /**
+   * @param UseEffect Getting initial data from database in startup
+   */
   useEffect(() => {
     const getDirs = async () => {
       const dirRawData = await IPC.ipcInvoke("EVENT:INVOCKE:GET:DATA", DIRS);
-
-      const direc = Object.values(dirRawData.data);
-
-      const data = initalDirData.map((item, i) => {
-        if (item.id === direc[i].id) {
-          //merging two objects
-          return Object.assign({}, item, direc[i]);
-        }
-      });
-
+      const data = mergeObject(initalDirData, dirRawData);
       setDirs(data);
     };
 
     getDirs();
   }, []);
 
-  const handleChangeDir = (e, name) => {
-    console.log(name);
+  const handleChangeDir = async (e, name) => {
+    const toBeUpdate = { searchKey: "directories", data: name };
+    const newDirs = await IPC.ipcInvoke(
+      "EVENT:INVOCKE:UPDATE:DATA",
+      toBeUpdate
+    );
+    const { status, data } = newDirs;
+    if (status) {
+      const newUpdateDirs = mergeObject(initalDirData, { data });
+      setDirs(newUpdateDirs);
+    }
   };
 
   return (

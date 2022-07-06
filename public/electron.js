@@ -1,5 +1,5 @@
 const { join } = require("path");
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const appInit = require("./services/startup-process");
 const DB = require("./services/database");
 // const Emiter = require("./services/mediatorBridge");
@@ -103,17 +103,61 @@ ipcMain.on("EVENT:FROM:RENDER", (e, arg) => {
  */
 ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
   const dirs = await DB.findOne(ARG);
-
   return dirs;
 });
 
 /**
  * @Updating new setting data from render process
  */
-ipcMain.handle("EVENT:INVOCKE:FOR:UPDATE:SETTING", async (_, ARG) => {
+ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
   const { searchKey, data } = ARG;
-  // Finding data from database
-  const updated = await DB.update(searchKey, data);
+  console.log({ data });
+  let updated;
+  switch (searchKey) {
+    case "pki":
+      /**
+       * @Handler for pki URL path configureation
+       */
+      updated = await DB.update(searchKey, data); // Finding data from database
+      break;
+    case "directories":
+      /**
+       * @handler for working directories configration
+       */
+      const allDirsDetails = await DB.findOne(searchKey); // Getting Default Path
+      const path = allDirsDetails.data[data].path
+        .split("\\") // path separator in window
+        .pop()
+        .split("/") // path separator in linux
+        .pop();
+
+      // Selecting forlder
+      const result = await dialog.showOpenDialog(mainWindow, {
+        properties: ["openDirectory"],
+        buttonLabel: "Choose",
+        defaultPath: path,
+      });
+
+      // saving new folde path to the database
+      if (!result.canceled) {
+        const updatedDir = {
+          ...allDirsDetails.data,
+          [data]: {
+            isDefault: false,
+            name: data,
+            path: result.filePaths[0],
+          },
+        };
+
+        updated = await DB.update(searchKey, updatedDir);
+      } else {
+        updated = { status: false, data: null };
+      }
+
+      break;
+    default:
+      break;
+  }
   return updated;
 });
 
