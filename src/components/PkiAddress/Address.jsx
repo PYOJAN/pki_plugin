@@ -101,7 +101,7 @@ const Input = ({ value, isEditable, onHandleChange }) => {
       type="text"
       name={isValidURL(value) ? "url" : "port"}
       value={value}
-      className={`form-control form-control-sm ${isEditable ? "disable" : ""}`}
+      className={`form-control form-control-sm ${isEditable ? "disable" : "allowed"}`}
       disabled={isEditable}
       onChange={(e) => onHandleChange(e)}
     />

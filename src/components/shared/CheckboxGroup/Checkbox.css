@@ -1,0 +1,7 @@
+.input_checkbox_item {
+    background-color: var(--dark1);
+}
+.input_checkbox_item label {
+    font-weight: 600;
+    letter-spacing: 0.6px;
+}

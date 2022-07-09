@@ -1,0 +1,7 @@
+.input_checkbox_item, .input_checkbox_item label {
+    cursor: pointer;
+}
+.app_control {
+    background-color: var(--dark2);
+    flex-grow: 1;
+}

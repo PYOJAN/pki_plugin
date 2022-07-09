@@ -1,0 +1,52 @@
+span.custom__radio {
+  height: 75%;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  font-weight: bold;
+  color: var(--dark);
+}
+span.custom__radio:hover:not(:last-child) {
+  background-color: var(--green);
+  color: aliceblue;
+}
+
+span.custom__radio.page_input {
+  width: 20px;
+  /* overflow: hidden; */
+}
+span.custom__radio.page_input > .custom_page_input {
+  background-color: transparent;
+  width: 100%;
+  outline: none;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--green);
+}
+span.custom__radio.page_input > .custom_page_input::placeholder {
+  color: var(--dark);
+}
+span.custom__radio.page_input > .custom_page_input:hover {
+  background-color: var(--green);
+  color: aliceblue;
+}
+span.custom__radio.page_input > .custom_page_input:focus::placeholder {
+    color: transparent;
+}
+span.custom__radio.page_input > .custom_page_input.act {
+  background-color: var(--green);
+  color: var(--text-gray1);
+}
+span.custom__radio.page_input > .custom_page_input:focus {
+  background-color: var(--green);
+  border: 1.5px solid var(--green);
+  cursor: text;
+  color: var(--text-gray1);
+}
+
+span.custom__radio._active {
+  background-color: var(--green);
+  color: var(--text-gray1);
+}

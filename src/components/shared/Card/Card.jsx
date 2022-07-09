@@ -10,7 +10,7 @@ export default function Card({ icon, name, dirPath, onChangeDir }) {
 
       <div className="card__body d-flex flex-column position-absolute justify-content-end p-2">
         <span className="text-capitalize">{name}</span>
-        <small className="text-nowrap">{dirPath}</small>
+        <small className="text-nowrap blockquote-footer text-warning">{dirPath}</small>
       </div>
 
       <VscSync className="changeDir" onClick={(e) => onChangeDir(e, name)} />

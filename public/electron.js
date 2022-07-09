@@ -2,6 +2,7 @@ const { join } = require("path");
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const appInit = require("./services/startup-process");
 const DB = require("./services/database");
+const { version } = require('../package.json');
 // const Emiter = require("./services/mediatorBridge");
 
 const {
@@ -102,8 +103,11 @@ ipcMain.on("EVENT:FROM:RENDER", (e, arg) => {
  * @Discreaption Sending initial App settings data to render process.
  */
 ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
-  const dirs = await DB.findOne(ARG);
-  return dirs;
+  if (ARG !== "APPVERSION") {
+    const dirs = await DB.findOne(ARG);
+    return dirs;
+  }
+  return version;
 });
 
 /**

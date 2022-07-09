@@ -1,3 +1,9 @@
 input[name="url"] {
     width: 60%!important;
 }
+.disable {
+    cursor: not-allowed!important;
+}
+.allowed {
+    cursor: inherit;
+}

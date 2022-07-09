@@ -1,0 +1,20 @@
+.signature__config {
+  background-color: var(--dark1);
+  height: calc(100% - (160px + 75px));
+}
+
+h3#form-heading {
+  top: -10px;
+  color: var(--text-gray1);
+  font-size: 0.9rem;
+  font-weight: bold;
+  max-width: max-content;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+}
+
+form {
+  background-color: var(--dark3);
+  border-top: var(--dark2) solid 10px;
+  border-radius: 2px;
+}
