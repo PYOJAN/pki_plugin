@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { MdEdit, MdCheck } from "react-icons/md";
-import { Confirm } from "notiflix/build/notiflix-confirm-aio";
+import React, { useState, useEffect, useMemo } from "react";
+import * as MdIcons from "react-icons/md";
+import * as FaIcon from "react-icons/fa";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
+import toast, { Toaster } from "react-hot-toast";
 
 import "./Address.css";
 
@@ -17,94 +18,70 @@ const IPC = window.electron.IPC;
 const ADDRESS = "pki";
 
 const Address = () => {
-  const [isEditable, setEditable] = useState(true);
-  const [values, setValues] = useState([]);
+  const [isEditable, setIsEditable] = useState(true);
+  const [values, setValues] = useState("");
 
   useEffect(() => {
     const getDirs = async () => {
       const pkiAddress = await IPC.ipcInvoke("EVENT:INVOCKE:GET:DATA", ADDRESS);
-
-      setValues(pkiAddress.data);
+      setValues(pkiAddress.pki.fullPkiUrl);
     };
     getDirs();
   }, []);
 
-  const handleChange = (e) => {
-    const { value, name } = e.target;
+  // Handle saving and edit data
+  const handleEditAndSave = () => {
+    const ipcHandle = async () => {
+      const savingResult = await IPC.ipcInvoke("EVENT:INVOCKE:UPDATE:DATA", {
+        searchKey: ADDRESS,
+        data: { fullPkiUrl: values },
+      });
+      
+      console.log({ savingResult });
+    };
 
-    setValues({
-      ...values,
-      [name]: value,
-    });
+    !isEditable && ipcHandle();
+
+    // 
+    setIsEditable(!isEditable);
   };
 
-  const editAndSaveNewData = async (e) => {
-    setEditable(!isEditable);
+  // Monitor value is valid URL or not
+  const isValid = useMemo(() => {
+    const regex =
+      /^((https?:\/\/)|(www.))(?:([a-zA-Z]+)|(\d+\.\d+.\d+.\d+)):\d{2,4}$/gm;
+    const result = regex.test(values);
+    !result && toast.error("This is an error!");
+    console.log(result);
 
-    if (!isEditable) {
-      Confirm.show(
-        "Save new setting",
-        "Do you want to save?",
-        "Save",
-        "Cancel",
-        async () => {
-          const isSaved = await IPC.ipcInvoke(
-            "EVENT:INVOCKE:UPDATE:DATA",
-            {
-              searchKey: ADDRESS,
-              data: values,
-            }
-          );
-          if (isSaved) Notify.success("PKI Setting update successfully.");
-        },
-        () => {
-          Notify.warning("Operation Canceled.");
-        },
-        {}
-      );
-    }
-  };
+    return result;
+  }, [values]);
 
   return (
     <div className="pki__address_form w-50">
       <label className="fw-bold text-white">PKI Address</label>
       <div className="input-group input-group-sm">
-        {Object.values(values).map((value, i) => (
-          <Input
-            key={i}
-            value={value}
-            isEditable={isEditable}
-            onHandleChange={handleChange}
-          />
-        ))}
+        <input
+          type="text"
+          name="fullPkiUrl"
+          value={values}
+          className={`form-control form-control-sm ${
+            isEditable ? "disable" : "allowed"
+          }`}
+          disabled={isEditable}
+          onChange={(e) => setValues(e.target.value)}
+        />
         <button
-          className={`btn btn-sm ${isEditable ? "btn-primary" : "bg-success"}`}
-          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-          onClick={(e) => editAndSaveNewData(e)}
+          className={`${
+            isEditable ? "btn-primary" : "btn-success"
+          } pkiAddressSaveBtn btn btn-sm rounded-0`}
+          onClick={() => handleEditAndSave()}
         >
-          {isEditable ? <MdEdit /> : <MdCheck />}
+          {isEditable ? <MdIcons.MdModeEdit /> : <FaIcon.FaCheck />}
         </button>
       </div>
+      <Toaster position="top-right" />
     </div>
-  );
-};
-
-const Input = ({ value, isEditable, onHandleChange }) => {
-  const isValidURL = (url) => {
-    return url.indexOf("http://") === 0 || url.indexOf("https://") === 0
-      ? true
-      : false;
-  };
-
-  return (
-    <input
-      type="text"
-      name={isValidURL(value) ? "url" : "port"}
-      value={value}
-      className={`form-control form-control-sm ${isEditable ? "disable" : "allowed"}`}
-      disabled={isEditable}
-      onChange={(e) => onHandleChange(e)}
-    />
   );
 };
 

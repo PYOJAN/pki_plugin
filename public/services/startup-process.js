@@ -1,18 +1,20 @@
 const { ensureDir, writeJson, readJson, pathExists } = require("fs-extra");
-const {findOne} = require("./database");
 const { join } = require("path");
-const { homedir } = require("os");
+const { userInfo } = require("os");
+const { homedir } = userInfo();
+const DB = require('./database')
 
 const DEFAULT_SETTINGS = join(
   __dirname,
   "../../database",
   "default_setting.json"
 );
-const APPSETTING = join(__dirname, "../../database", "setting.json");
+// const APPSETTING = join(__dirname, "../../database", "setting.json");
+const APPSETTING = DB.DBPATH;
 const ALLDIRS = [
-  join(homedir(), "Documents", "bulkSign", "source"),
-  join(homedir(), "Documents", "bulkSign", "original"),
-  join(homedir(), "Documents", "bulkSign", "signed"),
+  join(homedir, "Documents", "bulkSign", "source"),
+  join(homedir, "Documents", "bulkSign", "original"),
+  join(homedir, "Documents", "bulkSign", "signed"),
 ];
 
 const appInit = new Promise(async (resolve, reject) => {

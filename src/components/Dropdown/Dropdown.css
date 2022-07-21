@@ -3,30 +3,39 @@
   height: 30px;
   cursor: pointer;
   font-weight: 400;
+  z-index: 99;
 }
 .select_cert span {
   font-size: 0.75rem;
   font-weight: 500;
 }
 .cert_items {
-    top: 0;
-    z-index: 99;
-    gap: 5px;
-    visibility: hidden;
-    opacity: 0;
-    background-color: var(--dark);
-    transition: 0.3s ease-in-out;
+  max-height: 250px;
+  top: 20px;
+  z-index: 98;
+  gap: 5px;
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  background-color: var(--dark);
+  transition: 0.3s ease-in-out;
 }
 
 .cert_items li {
-    padding: 5px;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
+  padding: 5px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  color: var(--text-gray)!important;
+}
+.cert_items li.selected-cert {
+  background-color: var(--dark2);
+  color: var(--text-gray1)!important;
 }
 .cert_items.popup {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 .cert_items li:hover {
-    background-color: var(--dark2);
+  background-color: var(--dark2);
+  color: var(--text-gray1)!important;
 }

@@ -1,25 +1,51 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as VsIcons from "react-icons/vsc";
 import * as TbIcons from "react-icons/tb";
 
 import "./Dropdown.css";
+import { actionTypes } from "../Contexts/reducer";
+const IPC = window.electron.IPC;
 
-const Dropdown = () => {
+const CertList = ({ selectedCertificate, dispatch }) => {
   const [isOopen, setOpen] = useState(false);
+  const [certificateList, setCertificateList] = useState([]);
+  const [selectedCert, setSelectedCert] = useState("");
   const certEl = useRef(null);
 
-  const handlePopUpShow = (e) => {
-    setOpen(!isOopen);
+  useEffect(() => {
+    setSelectedCert(selectedCertificate);
+  }, [selectedCertificate]);
 
-    const individualCertElHeight = certEl.current.clientHeight;
-    certEl.current.style.top = !isOopen
-      ? `-${individualCertElHeight - 10}px`
-      : `0px`;
+  /**
+   * @param CertsList Getting initial data from database
+   */
+  const getCerts = async () => {
+    const allCert = await IPC.ipcInvoke("EVENT:INVOCKE:GET:DATA", "CERT");
+
+    setCertificateList(allCert);
   };
 
-  const handlePopUpHide = (e) => {
+  // Handle certificate list show handle
+  const handlePopUpShow = async (e) => {
+    setOpen(!isOopen);
+
+    await getCerts();
+    certEl.current.style.top = !isOopen ? `50px` : `20px`;
+  };
+
+  const handlePopUpHide = async (cert) => {
+    certEl.current.style.top = "20px";
     setOpen(false);
-    certEl.current.style.top = "0";
+
+    const selectedCertificateIs = { name: cert.name, sn: cert.sn };
+
+    setSelectedCert(selectedCertificateIs);
+
+    dispatch({
+      type: actionTypes.UPDATE_SINGLE,
+      field: "certs",
+      value: { ...selectedCertificateIs },
+    });
   };
 
   return (
@@ -32,10 +58,17 @@ const Dropdown = () => {
         <span className="selected px-2">
           {" "}
           <TbIcons.TbCertificate
-            className="text-white me-3"
+            className="text-white pt-0"
             style={{ fontSize: "1.2rem" }}
-          />{" "}
-          DS Test 16
+          />
+          <span
+            className="px-2 text-uppercase text-nowrap"
+            style={{ fontSize: "0.7rem", textOverflow: "ellipsis" }}
+          >
+            {selectedCert.sn !== "user_prompt"
+              ? `${selectedCert.name} ( sn: ${selectedCert.sn} )`
+              : "Select Certificate"}
+          </span>
         </span>
         {isOopen ? <VsIcons.VscTriangleUp /> : <VsIcons.VscTriangleDown />}
       </div>
@@ -43,18 +76,26 @@ const Dropdown = () => {
       <ul
         className={`cert_items ${
           isOopen && "popup"
+          // "popup"
         } position-absolute w-100 p-1 d-flex flex-column rounded`}
         ref={certEl}
       >
-        <li
-          className="p-1 rounded text-white"
-          onClick={(e) => handlePopUpHide(e)}
-        >
-          DS Test 1
-        </li>
+        {certificateList.map((cer) => (
+          <li
+            key={cer.sn}
+            className={`${
+              cer.name === selectedCert.name &&
+              cer.sn === selectedCert.sn &&
+              "selected-cert"
+            } p-1 rounded text-white text-uppercase`}
+            onClick={(e) => handlePopUpHide(cer)}
+          >
+            {`${cer.name} ( SN: ${cer.sn} )`}
+          </li>
+        ))}
       </ul>
     </div>
   );
 };
 
-export default Dropdown;
+export default CertList;

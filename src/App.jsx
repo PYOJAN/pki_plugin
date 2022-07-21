@@ -12,7 +12,6 @@ const App = () => {
 
       {/* Main content */}
       <MainBody />
-
       {/* window footer bar */}
       <Footer />
     </div>

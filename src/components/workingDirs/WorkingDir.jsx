@@ -35,7 +35,7 @@ const WorkingDir = () => {
    */
   const mergeObject = (initalDirData, dirRawData) => {
     let mergedData;
-    const direc = Object.values(dirRawData.data);
+    const direc = Object.values(dirRawData);
     mergedData = initalDirData.map((item, i) => {
       let newObject;
       if (item.id === direc[i].id) {
@@ -52,7 +52,7 @@ const WorkingDir = () => {
   useEffect(() => {
     const getDirs = async () => {
       const dirRawData = await IPC.ipcInvoke("EVENT:INVOCKE:GET:DATA", DIRS);
-      const data = mergeObject(initalDirData, dirRawData);
+      const data = mergeObject(initalDirData, dirRawData.directories);
       setDirs(data);
     };
 
@@ -67,7 +67,7 @@ const WorkingDir = () => {
     );
     const { status, data } = newDirs;
     if (status) {
-      const newUpdateDirs = mergeObject(initalDirData, { data });
+      const newUpdateDirs = mergeObject(initalDirData, data);
       setDirs(newUpdateDirs);
     }
   };

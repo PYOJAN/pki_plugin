@@ -1,69 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./RadioGroup.css";
 
-const RadioGroup = ({ items, onChangevalue = (e) => {} }) => {
-  const [active, setActive] = useState(1);
-  const [custom, setCustom] = useState({
-    isActive: false,
-    value: 0,
-  });
+let previousValue;
 
-  const handleChange = (id, value) => {
-    onChangevalue(value);
-    setActive(id);
+const RadioGroup = ({ items, onChangevalue = (e) => {}, value }) => {
+  const [active, setActive] = useState("Last");
+  const [inputValue, setInputvalue] = useState("");
 
-    // reset input field
-    setCustom({
-      isActive: false,
-      value: 0,
-    });
-  };
+  useEffect(() => {
+    const itemIs =
+      value === "First"
+        ? "First"
+        : value === "Last"
+        ? "Last"
+        : value === "All"
+        ? "All"
+        : "custom";
+    setActive(itemIs);
+    itemIs === "custom" && setInputvalue(value);
+  }, [value]);
 
-  const customPagehandle = (value) => {
-    setCustom({
-      ...custom,
-      value: value,
-    });
-  };
+  const valueSave = (itemType, elValue) => {
+    switch (itemType) {
+      case "check":
+        previousValue = elValue;
+        setActive(elValue);
+        inputValue !== "" && setInputvalue("");
 
-  const onInputFoucOut = () => {
-    setCustom({
-      ...custom,
-      isActive: custom.value > 0 && true,
-    });
+        // Saving data to the database
+        onChangevalue(elValue);
+        break;
+      case "custom":
+        previousValue = active;
+        elValue <= 0 || elValue === ""
+          ? setActive(previousValue)
+          : setActive(itemType);
 
-    onChangevalue(custom.value);
+        // Saving data to the database
+        onChangevalue(elValue);
+        break;
+
+      default:
+        break;
+    }
   };
 
   return (
     <>
-      {items.map((item) => (
-        <span
-          className={`${
-            item.id === active && !custom.isActive ? "_active" : ""
-          } ${
-            item.type === "text" && "page_input"
-          } custom__radio d-flex justify-content-center align-items-center flex-grow-1`}
-          key={item.id}
-          onClick={(e) =>
-            item.type === "check" && handleChange(item.id, item.value)
-          }
-        >
-          {item.type !== "check" ? (
+      {items.map((item) =>
+        item.type === "check" ? (
+          <span
+            className={`${
+              active === item.value ? "radio_active" : ""
+            } check_box d-flex w-100 justify-content-center align-items-center rounded`}
+            key={item.value}
+            onClick={() => valueSave(item.type, item.value)}
+          >
+            {item.value}
+          </span>
+        ) : (
+          item.type === "text" && (
             <input
-              type={item.type}
-              className={`${custom.value !== 0 && "act"} custom_page_input text-center`}
-              placeholder="Custom"
-              value={custom.value !== 0 ? custom.value : ""}
-              onChange={(e) => customPagehandle(e.target.value)}
-              onBlur={(e) => onInputFoucOut()}
+              className={`${
+                active === "custom" ? "radio_active" : ""
+              } input_radio text-center rounded`}
+              placeholder="Custome"
+              key={item.type}
+              type="text"
+              value={inputValue}
+              onChange={(e) => {
+                const inputVal = e.target.value;
+                setInputvalue(inputVal);
+              }}
+              onBlur={(e) => valueSave(item.value, e.target.value)}
             />
-          ) : (
-            item.value
-          )}
-        </span>
-      ))}
+          )
+        )
+      )}
     </>
   );
 };

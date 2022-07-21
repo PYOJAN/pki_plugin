@@ -1,52 +1,30 @@
-span.custom__radio {
-  height: 75%;
-  border-radius: 4px;
+.check_box,
+.input_radio {
+  height: 80%;
+  font-weight: 600;
+  color: var(--dark3);
   cursor: pointer;
   transition: 0.3s ease-in-out;
-  font-weight: bold;
-  color: var(--dark);
 }
-span.custom__radio:hover:not(:last-child) {
+.check_box:hover,
+.input_radio:hover {
+  background: #2b7b3f;
+  color: var(--text-gray1);
+}
+.check_box.radio_active,
+.input_radio.radio_active {
   background-color: var(--green);
-  color: aliceblue;
+  color: var(--text-gray1);
 }
 
-span.custom__radio.page_input {
-  width: 20px;
-  /* overflow: hidden; */
-}
-span.custom__radio.page_input > .custom_page_input {
+.input_radio {
+  width: 90%!important;
+  appearance: none;
   background-color: transparent;
-  width: 100%;
+  border: none;
   outline: none;
-  border-radius: 4px;
-  border: 1.5px solid transparent;
-  font-weight: bold;
-  cursor: pointer;
-  color: var(--green);
+  transition: 0.3s ease-in-out;
 }
-span.custom__radio.page_input > .custom_page_input::placeholder {
-  color: var(--dark);
-}
-span.custom__radio.page_input > .custom_page_input:hover {
-  background-color: var(--green);
-  color: aliceblue;
-}
-span.custom__radio.page_input > .custom_page_input:focus::placeholder {
-    color: transparent;
-}
-span.custom__radio.page_input > .custom_page_input.act {
-  background-color: var(--green);
-  color: var(--text-gray1);
-}
-span.custom__radio.page_input > .custom_page_input:focus {
-  background-color: var(--green);
-  border: 1.5px solid var(--green);
-  cursor: text;
-  color: var(--text-gray1);
-}
-
-span.custom__radio._active {
-  background-color: var(--green);
-  color: var(--text-gray1);
+input.input_radio::placeholder {
+  color: var(--dark3);
 }

@@ -1,5 +1,9 @@
-input[name="url"] {
+input[name="fullPkiUrl"] {
     width: 60%!important;
+}
+.pkiAddressSaveBtn {
+    border-top-right-radius: 4px!important;
+    border-bottom-right-radius: 4px!important;
 }
 .disable {
     cursor: not-allowed!important;

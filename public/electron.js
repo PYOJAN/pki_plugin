@@ -2,16 +2,26 @@ const { join } = require("path");
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const appInit = require("./services/startup-process");
 const DB = require("./services/database");
-const { version } = require('../package.json');
+const { version } = require("../package.json");
+const getCertFromWindowsStore = require("./services/getCertFromWin");
+const { userInfo } = require("os");
+const { homedir } = userInfo();
 // const Emiter = require("./services/mediatorBridge");
 
-const {
-  default: installExtension,
-  REACT_DEVELOPER_TOOLS,
-} = require("electron-devtools-installer");
+let installExe, reactDevTool;
 
 // Check if the app is running as a production or development environment.
 const isDev = !app.isPackaged;
+
+if (isDev) {
+  const {
+    default: installExtension,
+    REACT_DEVELOPER_TOOLS,
+  } = require("electron-devtools-installer");
+
+  installExe = installExtension;
+  reactDevTool = REACT_DEVELOPER_TOOLS;
+}
 
 // Main window is created when the app is ready.
 let mainWindow;
@@ -44,10 +54,10 @@ const createWindow = (cb) => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-
   // Sending data to the render process
   mainWindow.on("ready-to-show", () => {
     // Open the DevTools.
+    // isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
     isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
   });
 };
@@ -59,7 +69,7 @@ Promise.all([appInit, app.whenReady()])
   // appInit
   .then(async (data) => {
     // Install React Dev Tools.
-    await installExtension(REACT_DEVELOPER_TOOLS);
+    isDev && (await installExe(reactDevTool));
     // Create the browser window.
     await createWindow();
     mainWindow.show();
@@ -86,7 +96,7 @@ Promise.all([appInit, app.whenReady()])
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
-ipcMain.on("EVENT:FROM:RENDER", (e, arg) => {
+ipcMain.on("EVENT:FROM:RENDER", (_e, arg) => {
   const { eventType } = arg;
 
   switch (eventType) {
@@ -103,11 +113,16 @@ ipcMain.on("EVENT:FROM:RENDER", (e, arg) => {
  * @Discreaption Sending initial App settings data to render process.
  */
 ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
-  if (ARG !== "APPVERSION") {
-    const dirs = await DB.findOne(ARG);
-    return dirs;
+  if (ARG === "CERT") {
+    const certs = await getCertFromWindowsStore();
+    return certs;
   }
-  return version;
+  if (ARG !== "APPVERSION") {
+    const allData = await DB.findAll();
+    return allData.data;
+  } else {
+    return version;
+  }
 });
 
 /**
@@ -115,25 +130,31 @@ ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
  */
 ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
   const { searchKey, data } = ARG;
-  console.log({ data });
   let updated;
+  let path = join(homedir, "Documents");
+  updated = { data, searchKey };
   switch (searchKey) {
     case "pki":
       /**
        * @Handler for pki URL path configureation
        */
-      updated = await DB.update(searchKey, data); // Finding data from database
+      updated = await DB.update(searchKey, data); // Finding data from database and updating
       break;
     case "directories":
       /**
        * @handler for working directories configration
        */
       const allDirsDetails = await DB.findOne(searchKey); // Getting Default Path
-      const path = allDirsDetails.data[data].path
-        .split("\\") // path separator in window
-        .pop()
-        .split("/") // path separator in linux
-        .pop();
+      const dirInfo = allDirsDetails.data[data];
+      const fullPath = dirInfo === undefined ? null : dirInfo.path;
+
+      if (fullPath !== null) {
+        path = fullPath
+          .split("\\") // path separator in window
+          .pop()
+          .split("/") // path separator in linux
+          .pop();
+      }
 
       // Selecting forlder
       const result = await dialog.showOpenDialog(mainWindow, {
@@ -157,7 +178,9 @@ ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
       } else {
         updated = { status: false, data: null };
       }
-
+      break;
+    case "signature":
+      updated = await DB.update(searchKey, data); // Finding data from database and updating
       break;
     default:
       break;
@@ -168,6 +191,8 @@ ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
 // Error Handle
 // if the Promise is rejected this will catch it
 process.on("unhandledRejection", (error) => {
+  dialog.showMessageBox(mainWindow, { message: error });
+
   console.log({
     status: "ERROR",
     message: "Internal Error occurred",
@@ -178,6 +203,7 @@ process.on("unhandledRejection", (error) => {
 });
 
 process.on("uncaughtException", (error) => {
+  dialog.showMessageBox(mainWindow, { message: error });
   console.log({
     status: "ERROR",
     message: "Internal Error occurred",

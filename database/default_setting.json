@@ -21,13 +21,17 @@
     }
   },
   "signature": {
-    "page": "first",
-    "coord": { "x": "100", "y": "100" },
-    "size": { "width": "150", "height": "200" },
+    "page": "Last",
+    "coord": { "x": 100, "y": 100 },
+    "size": { "width": 150, "height": 200 },
+    "certs": { "name": "User Prompt", "sn": "user_prompt" },
+    "dateFormat": ["dd-MMM-yyyy hh:mm tt"],
+    "location": null,
+    "reason": null,
+    "customText": null,
     "isVisible": true,
     "enableLTV": false,
     "enabletimestamp": false
   },
-  "certs": { "name": "User Prompt", "sn": "user_prompt" },
-  "pki": { "url": "http://localhost", "port": "1620" }
+  "pki": { "fullPkiUrl": "http://localhost:1620" }
 }

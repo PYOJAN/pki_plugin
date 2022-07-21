@@ -31,6 +31,7 @@
 }
 .win__action[data-app="info"]{
     left: 0;
+    -webkit-app-region: drag;
 }
 .win__action[data-app="info"] span {
   text-transform: capitalize;

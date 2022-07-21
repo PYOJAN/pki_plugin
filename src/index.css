@@ -42,6 +42,7 @@
 html {
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 * {
   box-sizing: border-box;
@@ -50,7 +51,7 @@ html {
 body {
   margin: 0;
   font-family: "Nunito", sans-serif;
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   scroll-behavior: smooth;
   color: var(--gray);
   box-sizing: border-box;
@@ -206,20 +207,20 @@ input[type="checkbox"]:checked {
 input[type="checkbox"]::after {
   content: "";
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   background-color: var(--white);
   border-radius: 50%;
   position: absolute;
-  top: 50%;
-  left: 2px;
-  transform: translateY(-50%);
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+  top: 0;
+  left: 0;
+  transform: scale(0.8);
+  box-shadow: 0px 10px 15px -3px rgb(0 0 0 / 10%);
   transition: 0.2s ease-in-out;
 }
 
 input[type="checkbox"]:checked::after {
-  left: calc(100% - 19px);
+  left: calc(100% - 20px);
 }
 
 input[type="text"] {

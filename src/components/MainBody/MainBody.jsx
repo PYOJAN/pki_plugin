@@ -2,10 +2,13 @@ import React from "react";
 import WorkingDir from "../workingDirs/WorkingDir";
 import Address from "../PkiAddress/Address";
 import SignatureConfig from "../SignatureConfig/SignatureConfig";
+import { DataLayer } from "../Contexts/DataLayer";
+import reducer, { initialState } from "../Contexts/reducer";
 
 import "./MainBody.css";
 
 export default function MainBody() {
+
   return (
     <div className="main-body">
       {/** Card Container */}
@@ -16,8 +19,9 @@ export default function MainBody() {
       </div>
 
       {/* signature properties configure */}
-      <SignatureConfig />
-
+      <DataLayer reducer={reducer} initialState={initialState}>
+          <SignatureConfig />
+      </DataLayer>
     </div>
   );
 }

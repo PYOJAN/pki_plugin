@@ -2,8 +2,8 @@ const { join } = require("path");
 const { readJson, writeJson } = require("fs-extra");
 
 class jsonDB {
-  #DATABASE_PATH = join(__dirname, "../../database", "setting.json");
-  // #DATABASE_PATH = require("../../database/default_setting.json");
+  // #DATABASE_PATH = join(__dirname, "../../database", "setting.json");
+  #DATABASE_PATH = join(process.env["USERPROFILE"], "setting.json");
 
   constructor(dbReletivePath = this.#DATABASE_PATH) {
     this.dbPath = dbReletivePath;
@@ -58,6 +58,10 @@ class jsonDB {
     } catch (err) {
       return { status: false, data: null, message: err };
     }
+  }
+
+  get DBPATH() {
+    return this.dbPath;
   }
 }
 
