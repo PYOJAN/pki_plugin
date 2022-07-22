@@ -88,15 +88,15 @@ const FormAllTextFields = () => {
         </InputGroup>
       </SignatureConfigField>
       <SignatureConfigField>
-        <InputGroup feildLabel="Date Format">
+        {/* <InputGroup feildLabel="Date Format">
           <Input
             type="text"
             inputValue={dateFormat[0]}
             placeholder="dd-MMM-yyyy hh:mm tt"
             isDisabled={true}
           />
-        </InputGroup>
-        <InputGroup feildLabel="Custome Text">
+        </InputGroup> */}
+        <InputGroup classes="w-100" feildLabel="Custome Text">
           <Input
             type="text"
             name="customText"
@@ -104,7 +104,6 @@ const FormAllTextFields = () => {
             placeholder="Your Custome Test"
             onHandleChangevalue={handleCoordAndSize}
           />
-          {/* <Input type="text" placeholder="Your Custome Test" /> */}
         </InputGroup>
       </SignatureConfigField>
     </>

@@ -7,6 +7,8 @@ import "./FormRight.css";
 import CertList from "../Dropdown/Dropdown";
 import { actionTypes } from "../Contexts/reducer";
 
+import AppStartIcon from '../../assets/app-start.svg'
+
 const FormRight = () => {
   const [initData, dispatch] = useDataLayerValue();
   const { enableLTV, enableTimestamp, isVisible, certs } = initData;
@@ -49,8 +51,11 @@ const FormRight = () => {
         </SignatureConfigField>
       </form>
 
-      <div className="app_control w-100 mt-3">
-        <button className="btn btn-primary"></button>
+      <div className="app_control w-100 mt-3 d-flex justify-content-center align-items-center">
+        <button className="btn btn-primary w-50 h-50">
+          <img src={AppStartIcon} className="me-3" alt="app start" />
+          <span className=" px-3">Start</span>
+        </button>
       </div>
     </>
   );

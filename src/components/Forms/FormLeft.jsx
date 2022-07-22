@@ -19,12 +19,6 @@ const FormLeft = () => {
       <div className="coord_signBoxSize w-100 d-flex flex-column">
         {/* Signature config related fields */}
         <FormAllTextFields />
-        {/* <SignatureConfigField className="justify-content-center">
-          <button className="btn btn-success btn-sm mt-3 w-25 d-flex justify-content-around align-items-center">
-            <VsIcons.VscSave />
-            <strong className="ms-3">Save</strong>
-          </button>
-        </SignatureConfigField> */}
       </div>
     </form>
   );

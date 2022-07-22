@@ -45,7 +45,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "./assets/icons/plug.jpg"
+      "icon": "./src/assets/icons/plug.jpg"
     },
     "mac": {
       "category": "public.app-category.developer-tools",

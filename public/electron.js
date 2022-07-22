@@ -4,7 +4,7 @@ const appInit = require("./services/startup-process");
 const DB = require("./services/database");
 const { version } = require("../package.json");
 const getCertFromWindowsStore = require("./services/getCertFromWin");
-const { userInfo } = require("os");
+const { userInfo, platform } = require("os");
 const { homedir } = userInfo();
 // const Emiter = require("./services/mediatorBridge");
 
@@ -35,7 +35,7 @@ const createWindow = (cb) => {
     height: 600,
     resizable: false,
     frame: false,
-    // alwaysOnTop: true,
+    alwaysOnTop: !isDev ? true : false,
     backgroundColor: "transparent",
     webPreferences: {
       nodeIntegration: false,
@@ -101,7 +101,7 @@ ipcMain.on("EVENT:FROM:RENDER", (_e, arg) => {
 
   switch (eventType) {
     case "hide":
-      mainWindow.hide();
+      isDev ? mainWindow.hide() : mainWindow.quit();
       break;
 
     default:
@@ -117,6 +117,7 @@ ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
     const certs = await getCertFromWindowsStore();
     return certs;
   }
+
   if (ARG !== "APPVERSION") {
     const allData = await DB.findAll();
     return allData.data;
@@ -149,11 +150,9 @@ ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
       const fullPath = dirInfo === undefined ? null : dirInfo.path;
 
       if (fullPath !== null) {
-        path = fullPath
-          .split("\\") // path separator in window
-          .pop()
-          .split("/") // path separator in linux
-          .pop();
+        const isWin = platform() === "win32" ? "\\" : "/";
+        const split = fullPath.split(isWin);
+        path = split.slice(0, split.length - 2).join(isWin) + isWin;
       }
 
       // Selecting forlder
@@ -161,6 +160,7 @@ ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
         properties: ["openDirectory"],
         buttonLabel: "Choose",
         defaultPath: path,
+        title: `Choose folder for ${data.toUpperCase()}`,
       });
 
       // saving new folde path to the database

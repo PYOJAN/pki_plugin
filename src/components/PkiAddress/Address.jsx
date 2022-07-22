@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import * as MdIcons from "react-icons/md";
 import * as FaIcon from "react-icons/fa";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import "./Address.css";
 
@@ -36,36 +36,40 @@ const Address = () => {
         searchKey: ADDRESS,
         data: { fullPkiUrl: values },
       });
-      
-      console.log({ savingResult });
+
+      const { status } = savingResult;
+
+      if (status) {
+        toast.success(`New PKI Address saved. \n${values}`);
+      }
     };
 
     !isEditable && ipcHandle();
 
-    // 
+    //
     setIsEditable(!isEditable);
   };
 
   // Monitor value is valid URL or not
   const isValid = useMemo(() => {
     const regex =
-      /^((https?:\/\/)|(www.))(?:([a-zA-Z]+)|(\d+\.\d+.\d+.\d+)):\d{2,4}$/gm;
+      /^((https?:\/\/)|(www.))(?:([a-zA-Z0-9]+)|(\d+\.\d+.\d+.\d+)):\d{2,4}$/gm;
     const result = regex.test(values);
-    !result && toast.error("This is an error!");
-    console.log(result);
 
     return result;
   }, [values]);
 
   return (
     <div className="pki__address_form w-50">
-      <label className="fw-bold text-white">PKI Address</label>
+      <label className="text-white" style={{ fontWeight: "bold" }}>
+        PKI Address
+      </label>
       <div className="input-group input-group-sm">
         <input
           type="text"
           name="fullPkiUrl"
           value={values}
-          className={`form-control form-control-sm ${
+          className={`form-control form-control-sm ${!isValid ? "error" : ""} ${
             isEditable ? "disable" : "allowed"
           }`}
           disabled={isEditable}
@@ -74,13 +78,14 @@ const Address = () => {
         <button
           className={`${
             isEditable ? "btn-primary" : "btn-success"
-          } pkiAddressSaveBtn btn btn-sm rounded-0`}
-          onClick={() => handleEditAndSave()}
+          } pkiAddressSaveBtn btn btn-sm rounded-0 ${!isValid && "btn-danger"}`}
+          onClick={() =>
+            !isValid ? toast.error("Invalid PKI URL") : handleEditAndSave()
+          }
         >
           {isEditable ? <MdIcons.MdModeEdit /> : <FaIcon.FaCheck />}
         </button>
       </div>
-      <Toaster position="top-right" />
     </div>
   );
 };

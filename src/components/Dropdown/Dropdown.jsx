@@ -52,7 +52,7 @@ const CertList = ({ selectedCertificate, dispatch }) => {
     <div className="cert_dropDown w-100 h-100 position-relative d-flex flex-column">
       <strong className="form-label d-block text-white">Select Cert</strong>
       <div
-        className="select_cert w-100 bg-danger text-white rounded d-flex flex-row justify-content-between align-items-center px-2"
+        className="select_cert w-100 bg-primary text-white rounded d-flex flex-row justify-content-between align-items-center px-2"
         onClick={(e) => handlePopUpShow(e)}
       >
         <span className="selected px-2">
@@ -84,13 +84,12 @@ const CertList = ({ selectedCertificate, dispatch }) => {
           <li
             key={cer.sn}
             className={`${
-              cer.name === selectedCert.name &&
               cer.sn === selectedCert.sn &&
               "selected-cert"
             } p-1 rounded text-white text-uppercase`}
             onClick={(e) => handlePopUpHide(cer)}
           >
-            {`${cer.name} ( SN: ${cer.sn} )`}
+            {`${cer.name} ( SN: ${cer.sn} )`  }
           </li>
         ))}
       </ul>

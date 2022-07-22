@@ -1,13 +1,41 @@
 input[name="fullPkiUrl"] {
-    width: 60%!important;
+  width: 60% !important;
+  background-color: var(--dark3) !important;
+  border: 1px solid var(--green) !important;
+  border-right-color: #007bff!important;
+  color: #b2c8df !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
 }
+
+input[name="fullPkiUrl"].form-control.error {
+  border: 1px solid rgba(255, 0, 0, 0.25) !important;
+  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.25);
+}
+
+input[name="fullPkiUrl"].form-control.error:focus {
+  color: #495057;
+  background-color: #fff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+  border: 1px solid transparent !important;
+}
+input[name="fullPkiUrl"].form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 255, 30, 0.25);
+}
+
+/* input[name="fullPkiUrl"].error {
+  border: 2px solid #df3232a6!important;
+  color: #df3232!important;
+} */
+
 .pkiAddressSaveBtn {
-    border-top-right-radius: 4px!important;
-    border-bottom-right-radius: 4px!important;
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
 }
 .disable {
-    cursor: not-allowed!important;
+  cursor: not-allowed !important;
 }
 .allowed {
-    cursor: inherit;
+  cursor: inherit;
 }

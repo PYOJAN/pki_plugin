@@ -5,4 +5,4 @@ const pathResolver = (fileName) => {
 };
 
 
-module.exports = pathResolver;
+// module.exports = pathResolver;

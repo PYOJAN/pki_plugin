@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useDataLayerValue } from "../Contexts/DataLayer";
 import FormLeft from "../Forms/FormLeft";
 import FormRight from "../Forms/FormRight";
+import { Loading } from "notiflix/build/notiflix-loading-aio";
 
 import "./SignatureConfig.css";
 
@@ -22,8 +23,7 @@ const SignatureConfig = () => {
     };
 
     getAllInitData();
-    // setTimeout(() => {
-    // }, 3000);
+    Loading.remove(500); // Remove loder
   }, [dispatch]);
 
   return (

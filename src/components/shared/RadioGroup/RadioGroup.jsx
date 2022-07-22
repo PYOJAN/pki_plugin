@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 import "./RadioGroup.css";
 
@@ -71,9 +72,14 @@ const RadioGroup = ({ items, onChangevalue = (e) => {}, value }) => {
               value={inputValue}
               onChange={(e) => {
                 const inputVal = e.target.value;
-                setInputvalue(inputVal);
+                !isNaN(inputVal) && setInputvalue(inputVal); // Character is not allowed
               }}
-              onBlur={(e) => valueSave(item.value, e.target.value)}
+              onBlur={(e) => {
+                const target = e.target;
+                !+target.value <= 0 // ZERO and EMPTY is not allowed
+                  ? valueSave(item.value, +target.value)
+                  : toast.error("[ ZERO or EMPTY ] not allowed.");
+              }}
             />
           )
         )

@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 export const initialState = {
   page: "Last",
   coord: { x: 150, y: 100 },
@@ -18,13 +20,39 @@ export const actionTypes = {
 };
 
 const IPC = window.electron.IPC;
-const dataSaved = async (dataToBeUpdate) => {
-  const data = await IPC.ipcInvoke("EVENT:INVOCKE:UPDATE:DATA", {
+const dataSaved = async (dataToBeUpdate, field) => {
+  const savingResult = await IPC.ipcInvoke("EVENT:INVOCKE:UPDATE:DATA", {
     searchKey: "signature",
     data: dataToBeUpdate,
   });
-  return data;
+  const { status } = savingResult;
+
+  // Notify
+  if (status) {
+    const message = capitalizeFirstLetter(field);
+    toast.success(`${message} - Successfully update.`);
+  }
+
+  return savingResult;
 };
+
+//capitalize only the first letter of the string.
+function capitalizeFirstLetter(string) {
+  console.log(string);
+  const word =
+    string === "coord"
+      ? "coordinates"
+      : string === "certs"
+      ? "certificate"
+      : string === "isVisible"
+      ? "visibility"
+      : string === "enableLTV"
+      ? "LTV"
+      : string === "enableTimestamp"
+      ? "timestamp"
+      : string;
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
 
 const reducer = (state, action) => {
   let updatedData;
@@ -40,7 +68,7 @@ const reducer = (state, action) => {
         },
       };
 
-      dataSaved(updatedData);
+      dataSaved(updatedData, field);
       return updatedData;
 
     //? Single fields updating
@@ -50,7 +78,7 @@ const reducer = (state, action) => {
         [field]: value,
       };
 
-      dataSaved(updatedData);
+      dataSaved(updatedData, field);
       return updatedData;
     //? updating intire value
     default:

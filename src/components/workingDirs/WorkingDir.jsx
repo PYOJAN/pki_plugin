@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "../shared/Card/Card";
 import { VscFolder, VscFolderLibrary, VscFolderActive } from "react-icons/vsc";
+import toast from 'react-hot-toast';
 
 import "./WorkingDir.css";
 const IPC = window.electron.IPC;
@@ -69,6 +70,10 @@ const WorkingDir = () => {
     if (status) {
       const newUpdateDirs = mergeObject(initalDirData, data);
       setDirs(newUpdateDirs);
+
+      toast.success(`New path set for ${name}`);
+    } else {
+      toast.error(`New Path not set for ${name}`)
     }
   };
 
@@ -88,6 +93,7 @@ const WorkingDir = () => {
           />
         ))}
       </div>
+      {/* <Toaster /> */}
     </div>
   );
 };

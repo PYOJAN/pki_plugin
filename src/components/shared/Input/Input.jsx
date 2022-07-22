@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 const Input = ({
   type,
@@ -23,9 +24,11 @@ const Input = ({
     const isNumber = !isNaN(+_value) && (name === "coord" || name === "size");
     const isString =
       name === "location" || name === "reason" || name === "customText";
+      
+    const errorMsg = () => toast.error("CARACTER is not allowed.");
 
     // Updating private state
-    isNumber && setInitValue(_value);
+    isNumber ? setInitValue(_value) : !isString && errorMsg();
     isString && setInitValue(_value);
 
     // Updating database if user stope typing few second
@@ -35,18 +38,29 @@ const Input = ({
       if (isNumber)
         onHandleChangevalue({ inputValue: +_value, name, valueFor });
 
-      if (isString)
-        onHandleChangevalue({ inputValue: _value, name, valueFor });
+      if (isString) onHandleChangevalue({ inputValue: _value, name, valueFor });
     }, 500);
 
     setTimer(newTimer);
   };
+
+  // Inline css
+  const inputStyle = {
+    backgroundColor: "rgb(59, 66, 82)",
+    border: "1px solid transparent",
+    color: isDisabled ? "#495C83" : "#B2C8DF",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  };
+
   return (
     <>
       <input
         type={type}
         value={initValue}
-        className="form-control form-control-sm"
+        className="form-control form-control-sm px-2"
+        style={inputStyle}
         placeholder={placeholder}
         disabled={isDisabled}
         onChange={(e) => handleChannge(e)}
