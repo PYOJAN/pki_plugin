@@ -66,14 +66,14 @@ const WorkingDir = () => {
       "EVENT:INVOCKE:UPDATE:DATA",
       toBeUpdate
     );
-    const { status, data } = newDirs;
+    const { status, data, message } = newDirs;
     if (status) {
       const newUpdateDirs = mergeObject(initalDirData, data);
       setDirs(newUpdateDirs);
 
       toast.success(`New path set for ${name}`);
     } else {
-      toast.error(`New Path not set for ${name}`)
+      toast.error(message)
     }
   };
 

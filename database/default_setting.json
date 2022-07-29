@@ -31,7 +31,7 @@
     "customText": null,
     "isVisible": true,
     "enableLTV": false,
-    "enabletimestamp": false
+    "enableTimestamp": false
   },
   "pki": { "fullPkiUrl": "http://localhost:1620" }
 }

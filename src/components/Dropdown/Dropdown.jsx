@@ -34,6 +34,7 @@ const CertList = ({ selectedCertificate, dispatch }) => {
   };
 
   const handlePopUpHide = async (cert) => {
+    console.log({ cert });
     certEl.current.style.top = "20px";
     setOpen(false);
 
@@ -80,16 +81,25 @@ const CertList = ({ selectedCertificate, dispatch }) => {
         } position-absolute w-100 p-1 d-flex flex-column rounded`}
         ref={certEl}
       >
+        <li
+          className={`${
+            selectedCert.sn === "user_prompt" && "selected-cert"
+          } p-1 rounded text-white text-uppercase`}
+          onClick={(e) =>
+            handlePopUpHide({ name: "User Prompt", sn: "user_prompt" })
+          }
+        >
+          User Prompt
+        </li>
         {certificateList.map((cer) => (
           <li
             key={cer.sn}
             className={`${
-              cer.sn === selectedCert.sn &&
-              "selected-cert"
+              cer.sn === selectedCert.sn && "selected-cert"
             } p-1 rounded text-white text-uppercase`}
             onClick={(e) => handlePopUpHide(cer)}
           >
-            {`${cer.name} ( SN: ${cer.sn} )`  }
+            {`${cer.name} ( SN: ${cer.sn} )`}
           </li>
         ))}
       </ul>

@@ -9,12 +9,14 @@
     "email": "pki@gmail.com"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
+    "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
+    "fast-xml-parser": "^4.0.9",
     "fs-extra": "^10.1.0",
     "notiflix": "^3.2.5",
+    "pdf-parse": "^1.1.1",
+    "pdf-to-base64": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.3.0",
@@ -45,7 +47,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "./src/assets/icons/plug.jpg"
+      "icon": "./public/assets/App-Icon.png"
     },
     "mac": {
       "category": "public.app-category.developer-tools",

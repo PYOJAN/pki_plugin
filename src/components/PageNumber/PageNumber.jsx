@@ -10,7 +10,7 @@ const PageNumber = () => {
     { type: "check", value: "First" },
     { type: "check", value: "Last" },
     { type: "check", value: "All" },
-    { type: "text", value: "custom" },
+    { type: "text", value: "Custom" },
   ];
 
   const [initData, dispatch] = useDataLayerValue();

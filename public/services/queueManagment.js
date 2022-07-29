@@ -61,7 +61,8 @@ class Queue {
     }
     return this.#list[this.#head];
   }
-  all() {
+  // return all list of queue in array
+  get totalItems() {
     return this.#list;
   }
 }

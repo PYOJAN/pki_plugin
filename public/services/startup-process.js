@@ -2,7 +2,7 @@ const { ensureDir, writeJson, readJson, pathExists } = require("fs-extra");
 const { join } = require("path");
 const { userInfo } = require("os");
 const { homedir } = userInfo();
-const DB = require('./database')
+const DB = require("./database");
 
 const DEFAULT_SETTINGS = join(
   __dirname,
@@ -59,15 +59,17 @@ const appInit = new Promise(async (resolve, reject) => {
           },
         };
 
-        index === 2 &&
-          (await writeJson(APPSETTING, {
+        // write setting in JSON file.
+        if (index === 2) {
+          await writeJson(APPSETTING, {
             ...updatingIsFirstTimeValue,
             directories: updatedSetting,
             isFirstTime: {
               dbCreated: true,
               dirCreated: true,
             },
-          }));
+          });
+        }
       }
     });
 

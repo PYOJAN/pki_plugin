@@ -33,6 +33,11 @@
   text-overflow: ellipsis;
 }
 
+.card__body small:hover {
+  overflow: visible;
+  z-index: 9999;
+}
+
 .changeDir {
   position: absolute;
   top: 10px;

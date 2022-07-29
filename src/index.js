@@ -15,7 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Toaster
-      position="bottom-right"
+      position="top-right"
       toastOptions={{
         className: "mb-3 py-2",
         duration: 3000,

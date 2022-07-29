@@ -1,12 +1,14 @@
 const { join } = require("path");
-const { readJson, writeJson } = require("fs-extra");
+const { readJson, writeJson, ensureDir } = require("fs-extra");
+const { homedir } = require("os");
 
 class jsonDB {
   // #DATABASE_PATH = join(__dirname, "../../database", "setting.json");
-  #DATABASE_PATH = join(process.env["USERPROFILE"], "setting.json");
+  #DATABASE_PATH = join(homedir(), "AppData", "PKI Plugin", "setting.json");
 
   constructor(dbReletivePath = this.#DATABASE_PATH) {
     this.dbPath = dbReletivePath;
+    ensureDir(join(homedir(), "AppData", "PKI Plugin"));
   }
 
   // Getting all the data from the database

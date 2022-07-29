@@ -1,32 +1,36 @@
 const { join } = require("path");
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const appInit = require("./services/startup-process");
-const DB = require("./services/database");
-const { version } = require("../package.json");
-const getCertFromWindowsStore = require("./services/getCertFromWin");
-const { userInfo, platform } = require("os");
-const { homedir } = userInfo();
-// const Emiter = require("./services/mediatorBridge");
+const {
+  updateData,
+  getConfigData,
+  handleWindow,
+} = require("./services/ipc-communication");
+const {
+  StartSigningService,
+  StopSigningService,
+} = require("./services/signing-service");
+const { sysTray } = require("./services/systemTray");
 
 let installExe, reactDevTool;
 
 // Check if the app is running as a production or development environment.
 const isDev = !app.isPackaged;
-
 if (isDev) {
+  // Import REACT_DEVTOOL if is in the Development stage
   const {
     default: installExtension,
     REACT_DEVELOPER_TOOLS,
   } = require("electron-devtools-installer");
-
   installExe = installExtension;
   reactDevTool = REACT_DEVELOPER_TOOLS;
 }
 
 // Main window is created when the app is ready.
 let mainWindow;
+exports.mainWindow = mainWindow;
 
-const createWindow = (cb) => {
+const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: app.name,
@@ -36,6 +40,7 @@ const createWindow = (cb) => {
     resizable: false,
     frame: false,
     alwaysOnTop: !isDev ? true : false,
+    icon: join(__dirname, "./assets/App-Icon.png"),
     backgroundColor: "transparent",
     webPreferences: {
       nodeIntegration: false,
@@ -56,8 +61,6 @@ const createWindow = (cb) => {
   });
   // Sending data to the render process
   mainWindow.on("ready-to-show", () => {
-    // Open the DevTools.
-    // isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
     isDev && mainWindow.webContents.openDevTools({ mode: "detach" });
   });
 };
@@ -67,13 +70,15 @@ const createWindow = (cb) => {
 // Some APIs can only be used after this event occurs
 Promise.all([appInit, app.whenReady()])
   // appInit
-  .then(async (data) => {
+  .then(async () => {
     // Install React Dev Tools.
     isDev && (await installExe(reactDevTool));
     // Create the browser window.
-    await createWindow();
+    createWindow();
     mainWindow.show();
     mainWindow.focus();
+
+    // sysTray();
 
     app.on("activate", () => {
       // On macOS it's common to re-create a window in the app when the
@@ -84,131 +89,81 @@ Promise.all([appInit, app.whenReady()])
   .catch((err) => {
     console.log({
       status: "ERROR",
-      message: "Internal Error occurred",
+      message: err.message,
       errorStack: err.stack,
       stack: "Promise.all",
     });
   });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
+
+/**
+ * @description Window managment center
+ */
 ipcMain.on("EVENT:FROM:RENDER", (_e, arg) => {
   const { eventType } = arg;
-
-  switch (eventType) {
-    case "hide":
-      isDev ? mainWindow.hide() : mainWindow.quit();
-      break;
-
-    default:
-      break;
-  }
+  handleWindow(eventType, mainWindow);
 });
 
 /**
  * @Discreaption Sending initial App settings data to render process.
  */
 ipcMain.handle("EVENT:INVOCKE:GET:DATA", async (_, ARG) => {
-  if (ARG === "CERT") {
-    const certs = await getCertFromWindowsStore();
-    return certs;
-  }
-
-  if (ARG !== "APPVERSION") {
-    const allData = await DB.findAll();
-    return allData.data;
-  } else {
-    return version;
-  }
+  return await getConfigData(ARG);
 });
-
 /**
  * @Updating new setting data from render process
  */
 ipcMain.handle("EVENT:INVOCKE:UPDATE:DATA", async (_, ARG) => {
-  const { searchKey, data } = ARG;
-  let updated;
-  let path = join(homedir, "Documents");
-  updated = { data, searchKey };
-  switch (searchKey) {
-    case "pki":
-      /**
-       * @Handler for pki URL path configureation
-       */
-      updated = await DB.update(searchKey, data); // Finding data from database and updating
+  return await updateData(ARG, mainWindow);
+});
+
+// Signing service controll
+const service = {
+  START: "START",
+  STOP: "STOP",
+};
+ipcMain.handle("EVENT:INVOCKE:SIGNIG:SERVICE", async (_, ARG) => {
+  switch (ARG.isStart) {
+    case service.START:
+      console.log("SERVICE_START");
+      // StartSigningService
+      StartSigningService();
       break;
-    case "directories":
-      /**
-       * @handler for working directories configration
-       */
-      const allDirsDetails = await DB.findOne(searchKey); // Getting Default Path
-      const dirInfo = allDirsDetails.data[data];
-      const fullPath = dirInfo === undefined ? null : dirInfo.path;
-
-      if (fullPath !== null) {
-        const isWin = platform() === "win32" ? "\\" : "/";
-        const split = fullPath.split(isWin);
-        path = split.slice(0, split.length - 2).join(isWin) + isWin;
-      }
-
-      // Selecting forlder
-      const result = await dialog.showOpenDialog(mainWindow, {
-        properties: ["openDirectory"],
-        buttonLabel: "Choose",
-        defaultPath: path,
-        title: `Choose folder for ${data.toUpperCase()}`,
-      });
-
-      // saving new folde path to the database
-      if (!result.canceled) {
-        const updatedDir = {
-          ...allDirsDetails.data,
-          [data]: {
-            isDefault: false,
-            name: data,
-            path: result.filePaths[0],
-          },
-        };
-
-        updated = await DB.update(searchKey, updatedDir);
-      } else {
-        updated = { status: false, data: null };
-      }
-      break;
-    case "signature":
-      updated = await DB.update(searchKey, data); // Finding data from database and updating
+    case service.STOP:
+      console.log("SERVICE_STOP");
+      StopSigningService();
       break;
     default:
       break;
   }
-  return updated;
 });
 
 // Error Handle
 // if the Promise is rejected this will catch it
 process.on("unhandledRejection", (error) => {
-  dialog.showMessageBox(mainWindow, { message: error });
+  dialog.showErrorBox("ERROR", error.message);
 
-  console.log({
-    status: "ERROR",
-    message: "Internal Error occurred",
-    errorStack: error.stack,
-    stack: "unhandledRejection",
-  });
-  process.exit(1);
+  isDev &&
+    console.log({
+      status: "ERROR",
+      message: error.message,
+      errorStack: error.stack,
+      stack: "unhandledRejection",
+    });
+  // process.exit(1);
 });
 
 process.on("uncaughtException", (error) => {
-  dialog.showMessageBox(mainWindow, { message: error });
-  console.log({
-    status: "ERROR",
-    message: "Internal Error occurred",
-    errorStack: error.stack,
-    stack: "uncaughtException",
-  });
-  process.exit(1);
+  dialog.showMessageBox("ERROR", error.message);
+  isDev &&
+    console.log({
+      status: "ERROR",
+      message: error.message,
+      errorStack: error.stack,
+      stack: "uncaughtException",
+    });
+  // process.exit(1);
 });

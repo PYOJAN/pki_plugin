@@ -1,7 +1,7 @@
 import { createContext, useReducer, useContext } from "react";
 
-
 export const DataLayerContext = createContext();
+export const AppServiceContext = createContext();
 
 export const DataLayer = ({ initialState, reducer, children }) => (
   <DataLayerContext.Provider value={useReducer(reducer, initialState)}>
