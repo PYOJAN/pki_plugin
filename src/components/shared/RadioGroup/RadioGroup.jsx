@@ -23,6 +23,7 @@ const RadioGroup = ({ items, onChangevalue = (e) => {}, value }) => {
   }, [value]);
 
   const valueSave = (itemType, elValue) => {
+    console.log({itemType, elValue});
     switch (itemType) {
       case "check":
         previousValue = elValue;

@@ -85,7 +85,7 @@ const generateXmlReqBeforeSendingToPkiForSign = async (
   const pdfInfo = await pdfParse(readFileSync(pdfPathToBeMove));
 
   const PAGE_TYPE =
-    page === "First" || page === "Last" || page === "Custom"
+    page === "First" || page === "Last" || !isNaN(page)
       ? "singlePage"
       : "multiPage";
   switch (PAGE_TYPE) {
@@ -96,14 +96,17 @@ const generateXmlReqBeforeSendingToPkiForSign = async (
 
       signedJSONResult = await postReqToPki(encodedPdfInbase64, pageNumber);
 
-      if (signedJSONResult.status === "failed") {
+      const pageIsNotOutOfRange =
+        signedJSONResult.error !== "Page number is out of range";
+      if (signedJSONResult.status === "failed" && pageIsNotOutOfRange) {
         return dialog.showMessageBoxSync({
           message: signedJSONResult.error,
           type: "warning",
         });
       }
 
-      filehandlingAfterSigning(signedJSONResult.data, pdfPathToBeMove);
+      pageIsNotOutOfRange &&
+        filehandlingAfterSigning(signedJSONResult.data, pdfPathToBeMove);
 
       break;
 
@@ -139,7 +142,7 @@ const filehandlingAfterSigning = (SIGNED_DATA, pdfPathToBeMove) => {
 
   // Files handle after signing
   writeFile(
-    join(DIR_PATH_SIGNED, `${FILENAME.split('.')[0]}__signed.pdf`),
+    join(DIR_PATH_SIGNED, `${FILENAME.split(".")[0]}__signed.pdf`),
     SIGNED_DATA,
     { encoding: "base64" },
     (err) => {
