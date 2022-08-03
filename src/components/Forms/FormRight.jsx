@@ -14,12 +14,10 @@ const FormRight = () => {
   const { enableLTV, enableTimestamp, isVisible, certs } = initData;
   const [linuxCertValue, setLinuxCertValue] = useState(certs);
 
-  // console.log({ initData });
-
+  // Only for Linux system
   useEffect(() => {
     setLinuxCertValue(certs);
   }, [certs]);
-
   const handleChangeValue = ({ name, value }) => {
     dispatch({
       type: actionTypes.UPDATE_SINGLE,
@@ -27,16 +25,13 @@ const FormRight = () => {
       value,
     });
   };
-
   const handleCertChange = (e) => {
     e.preventDefault();
-
     setLinuxCertValue({
       name: certs.name,
       sn: e.target.value,
     });
   };
-
   const saveCertvalue = () => {
     dispatch({
       type: actionTypes.UPDATE_SINGLE,
@@ -49,7 +44,6 @@ const FormRight = () => {
       saveCertvalue();
     }
   };
-
   // Inline css
   const inputStyle = {
     backgroundColor: "rgb(59, 66, 82)",
@@ -60,6 +54,7 @@ const FormRight = () => {
     textOverflow: "ellipsis",
     width: "30px!important",
   };
+  // Only for Linux system
 
   return (
     <>

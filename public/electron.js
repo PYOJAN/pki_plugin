@@ -11,6 +11,7 @@ const {
   StopSigningService,
 } = require("./services/signing-service");
 const { sysTray } = require("./services/systemTray");
+const { checkConfig } = require("./utils/utils");
 
 let installExe, reactDevTool;
 
@@ -126,19 +127,22 @@ const service = {
   STOP: "STOP",
 };
 ipcMain.handle("EVENT:INVOCKE:SIGNIG:SERVICE", async (_, ARG) => {
+  const { isValid, message } = await await checkConfig();
+
   switch (ARG.isStart) {
     case service.START:
-      console.log("SERVICE_START");
-      // StartSigningService
-      StartSigningService();
+      if (isValid) {
+        StartSigningService();
+      }
       break;
     case service.STOP:
-      console.log("SERVICE_STOP");
       StopSigningService();
       break;
     default:
       break;
   }
+
+  return { isValid, message };
 });
 
 // Error Handle

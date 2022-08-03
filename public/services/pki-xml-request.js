@@ -1,4 +1,4 @@
-const { UUID } = require("../utils/path-resolver");
+const { UUID } = require("../utils/utils");
 const DB = require("./database");
 
 const getXmlRequest = async (base64Data, pageNumber) => {

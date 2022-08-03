@@ -58,7 +58,7 @@ const CertList = ({ selectedCertificate, dispatch }) => {
 
   return (
     <div className="cert_dropDown w-100 h-100 position-relative d-flex flex-column">
-      <strong className="form-label d-block text-white">Select Cert</strong>
+      <strong className="form-label d-block text-white">Select Certificate</strong>
       <button
         className="select_cert w-100 btn btn-sm btn-primary text-white rounded d-flex flex-row justify-content-between align-items-center px-2"
         onClick={(e) => handleShowCertList(e)}
