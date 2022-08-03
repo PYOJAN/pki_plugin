@@ -15,6 +15,8 @@ const XML_TO_JSON = new XMLParser();
 // axios configration
 const CONFIG = {
   headers: { "content-type": "text/xml" },
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity,
 };
 let WATCHER = null;
 let PDF_BASE64_DATA = null;
@@ -140,33 +142,49 @@ const filehandlingAfterSigning = (SIGNED_DATA, pdfPathToBeMove) => {
   // extracting pdf file name from path
   const FILENAME = pdfPathToBeMove?.split("\\").pop().split("/").pop();
 
-  // Files handle after signing
-  writeFile(
-    join(DIR_PATH_SIGNED, `${FILENAME.split(".")[0]}__signed.pdf`),
-    SIGNED_DATA,
-    { encoding: "base64" },
-    (err) => {
-      if (err) return console.log(err.message);
+  try {
+    // Files handle after signing
+    writeFile(
+      join(DIR_PATH_SIGNED, `${FILENAME.split(".")[0]}__signed.pdf`),
+      SIGNED_DATA,
+      { encoding: "base64" },
+      (err) => {
+        if (err) return console.log(err.message);
 
-      moveSync(pdfPathToBeMove, join(DIR_PATH_ORIGINAL, FILENAME), {
-        overwrite: true,
-      });
-    }
-  );
+        moveSync(pdfPathToBeMove, join(DIR_PATH_ORIGINAL, FILENAME), {
+          overwrite: true,
+        });
+      }
+    );
+  } catch (error) {
+    // return dialog.showMessageBoxSync({
+    //   message: error.message,
+    //   type: "error",
+    // });
+
+    console.log(error);
+  }
 };
 
 //
 const postReqToPki = async (PDF_BASE64, pageNumber) => {
-  const xmlReq = await getXmlRequest(PDF_BASE64, pageNumber);
+  try {
+    const xmlReq = await getXmlRequest(PDF_BASE64, pageNumber);
 
-  const signedRawResult = await axios.post(PKI_ADDRESS, xmlReq, CONFIG);
-  const signedJSONResult = await XML_TO_JSON.parse(signedRawResult.data);
+    const signedRawResult = await axios.post(PKI_ADDRESS, xmlReq, CONFIG);
+    const signedJSONResult = await XML_TO_JSON.parse(signedRawResult.data);
 
-  const { status, error } = signedJSONResult.response;
-  if (status === "failed") {
-    return { status, error };
-  } else if (signedJSONResult.response.data) {
-    return signedJSONResult.response;
+    const { status, error } = signedJSONResult.response;
+    if (status === "failed") {
+      return { status, error };
+    } else if (signedJSONResult.response.data) {
+      return signedJSONResult.response;
+    }
+  } catch (error) {
+    return dialog.showMessageBoxSync({
+      message: error.message,
+      type: "warning",
+    });
   }
 };
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Confirm } from "notiflix/build/notiflix-confirm-aio";
+
 import "./Checkbox.css";
 
 const Checkbox = ({ lable, checkboxName, isChecked, onChange = (e) => {} }) => {
@@ -9,8 +11,40 @@ const Checkbox = ({ lable, checkboxName, isChecked, onChange = (e) => {} }) => {
   }, [isChecked]);
 
   const handleChange = ({ value }) => {
-    onChange({ name: checkboxName, value });
-    setVisible(value);
+    console.log({ checkboxName, value });
+
+    const TITEL =
+      checkboxName === "enableLTV"
+        ? "Long term validation"
+        : checkboxName === "enableTimestamp"
+        ? "Sign Timestamp"
+        : checkboxName;
+
+    if (
+      (checkboxName === "enableLTV" && value) ||
+      (checkboxName === "enableTimestamp" && value)
+    ) {
+      Confirm.show(
+        TITEL,
+        "If you ENABLE, it will take more time for signing.",
+        "Enable",
+        "Disable",
+        () => {
+          onChange({ name: checkboxName, value });
+          setVisible(value);
+        },
+        () => setVisible(false),
+        {
+          borderRadius: "10px",
+          messageColor: "#d69d85",
+          backgroundColor: "#3b4252",
+          titleFontSize: "18px",
+        }
+      );
+    } else {
+      onChange({ name: checkboxName, value });
+      setVisible(value);
+    }
   };
 
   return (

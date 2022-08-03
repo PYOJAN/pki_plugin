@@ -115,9 +115,22 @@ const updateData = async (ARG, WINDOWS) => {
  * @returns It's return configuration data for rander process.
  */
 const getConfigData = async (ARG) => {
+  // const PKI_URL = await DB.findOne('pki');
   if (ARG === "CERT") {
     const certs = await getCertFromWindowsStore();
-    return certs;
+
+    if (certs === null) { // setting cert value as empty if machine store is empty..
+      const signatureDetails = await await DB.findOne("signature");
+      await DB.update("signature", {
+        ...signatureDetails,
+        certs: {
+          name: null,
+          sn: null,
+        },
+      });
+    }
+
+    return platform() === "linux" ? { platform: platform() } : certs;
   }
   if (ARG !== "APPVERSION") {
     const allData = await DB.findAll();
@@ -136,7 +149,7 @@ const getConfigData = async (ARG) => {
 const handleWindow = (eventType, activeWindow) => {
   switch (eventType) {
     case "hide":
-      isDev ? activeWindow.hide() : activeWindow.quit();
+      isDev ? activeWindow.hide() : app.quit();
       break;
 
     default:

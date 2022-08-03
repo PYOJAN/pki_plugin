@@ -24,7 +24,7 @@
     "page": "Last",
     "coord": { "x": 100, "y": 100 },
     "size": { "width": 150, "height": 200 },
-    "certs": { "name": "User Prompt", "sn": "user_prompt" },
+    "certs": { "name": null, "sn": null },
     "dateFormat": ["dd-MMM-yyyy hh:mm tt"],
     "location": null,
     "reason": null,

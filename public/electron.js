@@ -157,7 +157,7 @@ process.on("unhandledRejection", (error) => {
 });
 
 process.on("uncaughtException", (error) => {
-  dialog.showMessageBox("ERROR", error.message);
+  dialog.showErrorBox("ERROR", error.message);
   isDev &&
     console.log({
       status: "ERROR",

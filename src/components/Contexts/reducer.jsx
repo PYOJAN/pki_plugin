@@ -4,7 +4,7 @@ export const initialState = {
   page: "Last",
   coord: { x: 150, y: 100 },
   size: { width: 150, height: 200 },
-  certs: { name: "User Prompt", sn: "user_prompt" },
+  certs: { name: null, sn: null },
   dateFormat: ["dd-MMM-yyyy hh:mm tt"],
   location: null,
   reason: null,
@@ -38,7 +38,6 @@ const dataSaved = async (dataToBeUpdate, field) => {
 
 //capitalize only the first letter of the string.
 function capitalizeFirstLetter(string) {
-  console.log(string);
   const word =
     string === "coord"
       ? "coordinates"

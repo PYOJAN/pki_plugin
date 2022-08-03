@@ -23,7 +23,7 @@ const RadioGroup = ({ items, onChangevalue = (e) => {}, value }) => {
   }, [value]);
 
   const valueSave = (itemType, elValue) => {
-    console.log({itemType, elValue});
+    console.log({ itemType, elValue });
     switch (itemType) {
       case "check":
         previousValue = elValue;
@@ -75,11 +75,13 @@ const RadioGroup = ({ items, onChangevalue = (e) => {}, value }) => {
                 const inputVal = e.target.value;
                 !isNaN(inputVal) && setInputvalue(inputVal); // Character is not allowed
               }}
-              onBlur={(e) => {
-                const target = e.target;
-                !+target.value <= 0 // ZERO and EMPTY is not allowed
-                  ? valueSave(item.value, +target.value)
-                  : toast.error("[ ZERO or EMPTY ] not allowed.");
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === "numEnter") {
+                  const target = e.target;
+                  !+target.value <= 0 // ZERO and EMPTY is not allowed
+                    ? valueSave(item.value, +target.value)
+                    : toast.error("[ ZERO or EMPTY ] not allowed.");
+                }
               }}
             />
           )

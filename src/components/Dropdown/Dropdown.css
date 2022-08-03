@@ -32,6 +32,7 @@
   color: var(--text-gray1)!important;
 }
 .cert_items.popup {
+  top: 53px!important;
   visibility: visible;
   opacity: 1;
 }

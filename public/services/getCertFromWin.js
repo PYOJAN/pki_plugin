@@ -2,9 +2,8 @@ const winCA = require("win-ca");
 const crypto = require("crypto");
 const { platform } = require("os");
 
-
 /**
- * 
+ *
  * @returns it's returning user certificate from window certificate store.
  */
 const getCertFromWindowsStore = async () => {
@@ -44,7 +43,9 @@ const getCertFromWindowsStore = async () => {
     ];
   }
 
-  return validCert;
+  return validCert.length <= 0
+    ? null
+    : validCert;
 };
 
 module.exports = getCertFromWindowsStore;
