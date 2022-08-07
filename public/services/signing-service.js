@@ -30,10 +30,10 @@ let DIR_PATH_SIGNED = null;
  */
 const start = async () => {
   try {
+    const allConfigData = await (await DB.findAll()).data;
     // Working dir info form DATABASE
-    const dirInfo = await DB.findOne("directories");
-    DIR_PATH_ORIGINAL = dirInfo.data.original.path;
-    DIR_PATH_SIGNED = dirInfo.data.signed.path;
+    DIR_PATH_ORIGINAL = allConfigData["directories"].original.path;
+    DIR_PATH_SIGNED = allConfigData["directories"].signed.path;
 
     // PKI address info form DATABASE
     const pkiInfo = await DB.findOne("pki");
@@ -41,7 +41,7 @@ const start = async () => {
 
     // source PATH to be monitored
     DIR_PATH_SOURCE = join(
-      dirInfo.data["source"].path,
+      allConfigData["directories"].source.path,
       `${sep}${sep}**${sep}*.pdf`
     );
     /**
@@ -98,8 +98,7 @@ const generateXmlReqBeforeSendingToPkiForSign = async (
 
       signedJSONResult = await postReqToPki(encodedPdfInbase64, pageNumber);
 
-      const pageIsNotOutOfRange =
-        signedJSONResult.error !== "Page number is out of range";
+      const pageIsNotOutOfRange = page > pdfInfo.numpages; // if provide page number is out of pdf page range
       if (signedJSONResult.status === "failed" && pageIsNotOutOfRange) {
         return dialog.showMessageBoxSync({
           message: signedJSONResult.error,
@@ -157,12 +156,11 @@ const filehandlingAfterSigning = (SIGNED_DATA, pdfPathToBeMove) => {
       }
     );
   } catch (error) {
-    // return dialog.showMessageBoxSync({
-    //   message: error.message,
-    //   type: "error",
-    // });
-
     console.log(error);
+    return dialog.showMessageBoxSync({
+      message: error.message,
+      type: "error",
+    });
   }
 };
 

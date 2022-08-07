@@ -65,6 +65,7 @@ const FormRight = () => {
               <input
                 type="text"
                 className="form-control form-control-sm px-2"
+                placeholder="Certificate Name"
                 style={inputStyle}
                 value={linuxCertValue.name === null ? "" : linuxCertValue.name}
                 disabled={true}
@@ -72,6 +73,7 @@ const FormRight = () => {
               <input
                 type="text"
                 className="form-control form-control-sm px-2"
+                placeholder="Certificate Serial Number"
                 style={inputStyle}
                 value={linuxCertValue.sn === null ? "" : linuxCertValue.sn}
                 onChange={handleCertChange}
@@ -86,7 +88,7 @@ const FormRight = () => {
         )}
         <SignatureConfigField>
           <Checkbox
-            lable="LTV"
+            lable="Long Term Validation"
             checkboxName="enableLTV"
             isChecked={enableLTV}
             onChange={handleChangeValue}

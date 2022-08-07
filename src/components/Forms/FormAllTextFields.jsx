@@ -30,7 +30,7 @@ const FormAllTextFields = () => {
   return (
     <>
       <SignatureConfigField>
-        <InputGroup feildLabel="Coordinate">
+        <InputGroup feildLabel="Coordinate [ X | Y ]">
           <Input
             type="text"
             name="coord"
@@ -48,20 +48,20 @@ const FormAllTextFields = () => {
             onHandleChangevalue={handleCoordAndSize}
           />
         </InputGroup>
-        <InputGroup feildLabel="Sign Box Size">
+        <InputGroup feildLabel="Sign Box Size [ W | H ]">
           <Input
             type="text"
             name="size"
-            fieldFor="size-width"
-            inputValue={size.width}
+            fieldFor="size-height"
+            inputValue={size.height}
             placeholder="Width"
             onHandleChangevalue={handleCoordAndSize}
           />
           <Input
             type="text"
             name="size"
-            fieldFor="size-height"
-            inputValue={size.height}
+            fieldFor="size-width"
+            inputValue={size.width}
             placeholder="height"
             onHandleChangevalue={handleCoordAndSize}
           />

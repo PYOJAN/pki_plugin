@@ -30,6 +30,8 @@ const checkConfig = async () => {
   if (signature?.certs.sn === null || signature?.certs.sn === "")
     return { isValid: false, message: "Plase provide certifcate by selecting certificate or entering certificate serial number." };
 
+  
+
   return { isValid: true, message: "Config are valid." };
 };
 

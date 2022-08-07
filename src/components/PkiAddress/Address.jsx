@@ -80,7 +80,7 @@ const Address = () => {
             isEditable ? "btn-primary" : "btn-success"
           } pkiAddressSaveBtn btn btn-sm rounded-0 ${!isValid && "btn-danger"}`}
           onClick={() =>
-            !isValid ? toast.error("Invalid PKI URL") : handleEditAndSave()
+            (!isValid && !isEditable) ? toast.error("Invalid PKI URL") : handleEditAndSave()
           }
         >
           {isEditable ? <MdIcons.MdModeEdit /> : <FaIcon.FaCheck />}

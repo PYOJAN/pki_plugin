@@ -30,7 +30,7 @@ const PageNumber = () => {
   return (
     <div className="page__number__selector mt-2 position-relative d-flex flex-column rounded">
       <label id="page" className="position-absolute px-1 mb-1 text-white">
-        Page
+        Page Number
       </label>
       <div className="page__number mt-auto w-100 d-flex flex-row justify-content-center align-items-center">
         <RadioGroup
