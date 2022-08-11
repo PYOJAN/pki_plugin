@@ -5,7 +5,6 @@ const { platform, homedir } = require("os");
 const DB = require("./database");
 
 const { version } = require("../../package.json");
-const isDev = !app.isPackaged;
 
 /**
  *
@@ -149,7 +148,7 @@ const getConfigData = async (ARG) => {
 const handleWindow = (eventType, activeWindow) => {
   switch (eventType) {
     case "hide":
-      isDev ? activeWindow.hide() : app.quit();
+      activeWindow.hide() 
       break;
 
     default:

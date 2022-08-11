@@ -12,6 +12,7 @@ const {
 } = require("./services/signing-service");
 const { sysTray } = require("./services/systemTray");
 const { checkConfig } = require("./utils/utils");
+const { Transport, emmiterNames } = require("./services/emmiter");
 
 let installExe, reactDevTool;
 
@@ -79,7 +80,7 @@ Promise.all([appInit, app.whenReady()])
     mainWindow.show();
     mainWindow.focus();
 
-    // sysTray();
+    sysTray();
 
     app.on("activate", () => {
       // On macOS it's common to re-create a window in the app when the
@@ -107,6 +108,9 @@ ipcMain.on("EVENT:FROM:RENDER", (_e, arg) => {
   const { eventType } = arg;
   handleWindow(eventType, mainWindow);
 });
+Transport.on(emmiterNames.trigger, () => {
+  mainWindow.show();
+})
 
 /**
  * @Discreaption Sending initial App settings data to render process.
@@ -127,16 +131,21 @@ const service = {
   STOP: "STOP",
 };
 ipcMain.handle("EVENT:INVOCKE:SIGNIG:SERVICE", async (_, ARG) => {
-  const { isValid, message } = await await checkConfig();
-
+  let isValid, message;
   switch (ARG.isStart) {
     case service.START:
+      const checkResult = await await checkConfig();
+      isValid = checkResult.isValid;
+      message = checkResult.message;
+
       if (isValid) {
         StartSigningService();
+        mainWindow.webContents.send("message", {isValid, message});
       }
       break;
     case service.STOP:
       StopSigningService();
+      mainWindow.webContents.send("message", {isValid: false, message: "Service stop"});
       break;
     default:
       break;
@@ -144,6 +153,13 @@ ipcMain.handle("EVENT:INVOCKE:SIGNIG:SERVICE", async (_, ARG) => {
 
   return { isValid, message };
 });
+
+/**
+ * Main to render message transporter
+ */
+// Transport.on(emmiterNames.message, (message) => {
+//   mainWindow.webContents.send("MESSGAES", message);
+// });
 
 // Error Handle
 // if the Promise is rejected this will catch it

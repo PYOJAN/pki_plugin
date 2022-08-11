@@ -14,15 +14,21 @@ const AppServiceHandle = () => {
     STOP: "STOP",
   };
 
+  // IPC.once("MESSGAES", (_, message) => {
+  //   toast.error(message);
+  //   setIsServiceStart(service.STOP);
+  // })
+
   const handleAppService = async (e) => {
+    setIsServiceStart(!isServiceStart);
     const serviceStatus = await IPC.ipcInvoke("EVENT:INVOCKE:SIGNIG:SERVICE", {
       isStart: !isServiceStart ? service.START : service.STOP,
     });
     const { isValid, message } = serviceStatus;
-
-    if (!isValid) return toast.error(message);
-
-    setIsServiceStart(!isServiceStart);
+    if (!isValid) {
+      setIsServiceStart(false);
+      return message !== undefined && toast.error(message);
+    }
   };
 
   return (

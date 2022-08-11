@@ -1,23 +1,16 @@
 const { join, sep } = require("path");
 const chokidar = require("chokidar");
 const DB = require("./database");
-const { XMLParser } = require("fast-xml-parser");
 const pdfToBase64 = require("pdf-to-base64");
-const { getXmlRequest } = require("./pki-xml-request");
-const axios = require("axios");
 const { writeFile, readFileSync } = require("fs");
 const { moveSync } = require("fs-extra");
 const pdfParse = require("pdf-parse");
 const { dialog } = require("electron");
+const { postReqToPki } = require("../utils/utils");
+const { Transport, emmiterNames } = require("./emmiter");
 
-const XML_TO_JSON = new XMLParser();
+// const XML_TO_JSON = new XMLParser();
 
-// axios configration
-const CONFIG = {
-  headers: { "content-type": "text/xml" },
-  maxContentLength: Infinity,
-  maxBodyLength: Infinity,
-};
 let WATCHER = null;
 let PDF_BASE64_DATA = null;
 let PKI_ADDRESS = null;
@@ -96,9 +89,13 @@ const generateXmlReqBeforeSendingToPkiForSign = async (
       pageNumber =
         page === "First" ? 1 : page === "Last" ? pdfInfo.numpages : page;
 
-      signedJSONResult = await postReqToPki(encodedPdfInbase64, pageNumber);
+      signedJSONResult = await postReqToPki(
+        encodedPdfInbase64,
+        pageNumber,
+        PKI_ADDRESS
+      );
 
-      const pageIsNotOutOfRange = page > pdfInfo.numpages; // if provide page number is out of pdf page range
+      const pageIsNotOutOfRange = page > pdfInfo.numpages || page === 0; // if provide page number is out of pdf page range
       if (signedJSONResult.status === "failed" && pageIsNotOutOfRange) {
         return dialog.showMessageBoxSync({
           message: signedJSONResult.error,
@@ -106,15 +103,18 @@ const generateXmlReqBeforeSendingToPkiForSign = async (
         });
       }
 
-      pageIsNotOutOfRange &&
-        filehandlingAfterSigning(signedJSONResult.data, pdfPathToBeMove);
+      filehandlingAfterSigning(signedJSONResult.data, pdfPathToBeMove);
 
       break;
 
     case "multiPage":
       let SIGNED_PDF = encodedPdfInbase64;
       for (let pageNum = 1; pageNum <= pdfInfo.numpages; pageNum++) {
-        const signedJSONResult = await postReqToPki(SIGNED_PDF, pageNum);
+        const signedJSONResult = await postReqToPki(
+          SIGNED_PDF,
+          pageNum,
+          PKI_ADDRESS
+        );
 
         if (signedJSONResult.status === "failed") {
           return dialog.showMessageBoxSync({
@@ -164,30 +164,8 @@ const filehandlingAfterSigning = (SIGNED_DATA, pdfPathToBeMove) => {
   }
 };
 
-//
-const postReqToPki = async (PDF_BASE64, pageNumber) => {
-  try {
-    const xmlReq = await getXmlRequest(PDF_BASE64, pageNumber);
-
-    const signedRawResult = await axios.post(PKI_ADDRESS, xmlReq, CONFIG);
-    const signedJSONResult = await XML_TO_JSON.parse(signedRawResult.data);
-
-    const { status, error } = signedJSONResult.response;
-    if (status === "failed") {
-      return { status, error };
-    } else if (signedJSONResult.response.data) {
-      return signedJSONResult.response;
-    }
-  } catch (error) {
-    return dialog.showMessageBoxSync({
-      message: error.message,
-      type: "warning",
-    });
-  }
-};
-
 const StopSigningService = () => {
-  WATCHER.close().then(() => console.log("watcher stop"));
+  WATCHER && WATCHER.close().then(() => console.log("watcher stop"));
 };
 
 module.exports = {

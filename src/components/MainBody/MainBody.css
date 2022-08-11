@@ -31,8 +31,48 @@
     0% 100%
   );
   backdrop-filter: blur(4px);
-  background-color: transparent;
+  /* background-color: rgba(240, 168, 168, 0.3); */
 
   cursor: not-allowed;
   z-index: 999999999;
+}
+
+
+.service-info {
+  width: 18rem;
+  height: auto;
+  max-height: 50%;
+  cursor: default;
+}
+.bgColor {
+  background-color:  rgba(255, 255, 255, 0.8);
+}
+.textColor {
+  color: rgb(255, 57, 57);
+}
+
+.info-list {
+  font-size: 0.9rem;
+}
+.info-list > li {
+  margin-bottom: 10px;
+  padding: 2px 0;
+}
+.info-list .list-icon {
+  font-size: 1.2rem;
+  margin-right: 0.4rem;
+}
+
+.refresh {
+  color: red;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
 }

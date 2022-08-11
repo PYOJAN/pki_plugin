@@ -1,17 +1,19 @@
-const { Tray, Menu, nativeImage } = require("electron");
+const { Tray, Menu, nativeImage, app } = require("electron");
 const { join } = require("path");
+const { Transport, emmiterNames } = require("./emmiter");
 
 const contextMenu = Menu.buildFromTemplate([
   {
-    label: "Edit",
-    submenu: [
-      {
-        id: "revert-changes",
-        label: "Revert Changes",
-        // click: revertChanges,
-        enabled: false,
-      },
-    ],
+    label: "Show PKI Plugin",
+    click: () => {
+      Transport.trigger("showMainWindow");
+    },
+  },
+  {
+    label: "Quit",
+    click: () => {
+      app.quit();
+    },
   },
 ]);
 
@@ -22,7 +24,7 @@ const sysTray = () => {
   );
 
   tray = new Tray(icon);
-
+  tray.setToolTip("PKI Plugin");
   tray.setContextMenu(contextMenu);
 };
 
