@@ -5,8 +5,8 @@
   "main": "public/electron.js",
   "homepage": "./",
   "author": {
-    "name": "pki_electron",
-    "email": "pki@gmail.com"
+    "name": "PYOJAN",
+    "email": "pintuprajapati4@gmail.com"
   },
   "dependencies": {
     "axios": "^0.27.2",
