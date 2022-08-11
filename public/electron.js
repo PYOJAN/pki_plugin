@@ -41,7 +41,7 @@ const createWindow = () => {
     height: 600,
     resizable: false,
     frame: false,
-    alwaysOnTop: !isDev ? true : false,
+    alwaysOnTop: false,
     icon: join(__dirname, "./assets/App-Icon.png"),
     backgroundColor: "transparent",
     webPreferences: {
